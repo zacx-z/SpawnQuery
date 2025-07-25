@@ -8,6 +8,12 @@ USpawnQueryGraphNode::USpawnQueryGraphNode(const FObjectInitializer& ObjectIniti
 {
 }
 
+void USpawnQueryGraphNode::AllocateDefaultPins()
+{
+	CreatePin(EGPD_Input, "MultipleNodes", TEXT("In"));
+	CreatePin(EGPD_Output, "MultipleNodes", TEXT("Out"));
+}
+
 FText USpawnQueryGraphNode::GetNodeTitle(ENodeTitleType::Type TitleType) const
 {
 	return FText::GetEmpty();

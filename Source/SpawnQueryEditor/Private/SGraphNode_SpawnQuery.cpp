@@ -8,7 +8,7 @@
 #include "SpawnQueryGraph.h"
 #include "SpawnQueryGraphNode.h"
 #include "SpawnQuery/SpawnQueryNode.h"
-#include "SpawnQuery/SpawnQueryNode_Sample.h"
+#include "SpawnQuery/SpawnQueryNode_Sampler.h"
 #include "SpawnQuery/SpawnQueryNode_Composite.h"
 
 #include "GraphEditorSettings.h"
@@ -79,7 +79,7 @@ FSlateColor SGraphNode_SpawnQuery::GetBackgroundColor() const
 	FLinearColor NodeColor = SpawnQueryColors::NodeBody::Default;
 	if (MyClass)
 	{
-		if (MyClass->IsChildOf(USpawnQueryNode_Sample::StaticClass()))
+		if (MyClass->IsChildOf(USpawnQueryNode_Sampler::StaticClass()))
 		{
 			NodeColor = SpawnQueryColors::NodeBody::Sample;
 		}

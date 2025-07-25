@@ -9,7 +9,7 @@ USpawnQueryGraphNode_Root::USpawnQueryGraphNode_Root(const FObjectInitializer& O
 
 void USpawnQueryGraphNode_Root::AllocateDefaultPins()
 {
-	UEdGraphPin* Outputs = CreatePin(EGPD_Output, TEXT("Transition"), TEXT("In"));
+	UEdGraphPin* Outputs = CreatePin(EGPD_Output, TEXT("Transition"), TEXT("Out"));
 }
 
 FText USpawnQueryGraphNode_Root::GetNodeTitle(ENodeTitleType::Type TitleType) const

@@ -12,6 +12,7 @@
 #include "AIGraphTypes.h"
 #include "SpawnQueryGraphNode.h"
 #include "SpawnQuery.h"
+#include "SpawnQuery/SpawnQueryNode.h"
 
 #include "PropertyEditorModule.h"
 #include "SpawnQueryEditor.h"
@@ -139,7 +140,7 @@ TSharedRef<ISpawnQueryEditor> FSpawnQueryEditorModule::CreateSpawnQueryEditor(co
 {
 	if (!ClassCache.IsValid())
 	{
-		//ClassCache = MakeShareable(new FGraphNodeClassHelper(USpawnQueryNode::StaticClass()));
+		ClassCache = MakeShareable(new FGraphNodeClassHelper(USpawnQueryNode::StaticClass()));
 	}
 
 	TSharedRef<FSpawnQueryEditor> NewSpawnQueryEditor(new FSpawnQueryEditor());

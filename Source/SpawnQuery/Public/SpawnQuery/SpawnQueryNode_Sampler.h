@@ -4,11 +4,11 @@
 #include "UObject/ObjectMacros.h"
 #include "Templates/SubclassOf.h"
 #include "SpawnQuery/SpawnQueryNode.h"
-#include "SpawnQueryNode_Sample.generated.h"
+#include "SpawnQueryNode_Sampler.generated.h"
 
 
-UCLASS(EditInlineNew, Abstract, meta = (Category = "Generators"), MinimalAPI)
-class USpawnQueryNode_Sample : public USpawnQueryNode
+UCLASS(EditInlineNew, Abstract, meta = (Category = "Samplers"), MinimalAPI)
+class USpawnQueryNode_Sampler : public USpawnQueryNode
 {
 	GENERATED_UCLASS_BODY()
 

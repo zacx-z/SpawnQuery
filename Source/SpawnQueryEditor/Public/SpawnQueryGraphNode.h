@@ -6,12 +6,13 @@
 class UEdGraphSchema;
 
 UCLASS()
-class USpawnQueryGraphNode : public UAIGraphNode
+class SPAWNQUERYEDITOR_API USpawnQueryGraphNode : public UAIGraphNode
 {
 	GENERATED_UCLASS_BODY()
 
 	virtual class USpawnQueryGraph* GetSpawnQueryGraph();
 
+	virtual void AllocateDefaultPins() override;
 	virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
 	virtual FText GetDescription() const override;
 

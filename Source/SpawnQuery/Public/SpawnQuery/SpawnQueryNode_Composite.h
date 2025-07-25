@@ -1,0 +1,30 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "SpawnQuery/SpawnQueryNode.h"
+#include "SpawnQueryNode_Composite.generated.h"
+
+class USpawnQueryNode_Sampler;
+
+USTRUCT()
+struct FSpawnQueryCompositeChild
+{
+	GENERATED_USTRUCT_BODY()
+
+	/** child node */
+	UPROPERTY()
+	TObjectPtr<USpawnQueryNode_Composite> ChildComposite = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<USpawnQueryNode_Sampler> ChildTask = nullptr;
+};
+
+UCLASS(Abstract, MinimalAPI)
+class USpawnQueryNode_Composite : public USpawnQueryNode
+{
+	GENERATED_UCLASS_BODY()
+
+	/** child nodes */
+	UPROPERTY()
+	TArray<FSpawnQueryCompositeChild> Children;
+};
