@@ -43,8 +43,10 @@ public class SpawnQueryEditor : ModuleRules
 				"ToolMenus",
 				"CoreUObject",
 				"Engine",
+				"GraphEditor",
 				"Slate",
 				"SlateCore",
+				"KismetWidgets",
 				// ... add private dependencies that you statically link with here ...	
 				"SpawnQuery",
 			}

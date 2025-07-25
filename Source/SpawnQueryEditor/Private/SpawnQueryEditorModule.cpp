@@ -10,16 +10,34 @@
 #include "ToolMenus.h"
 
 #include "AIGraphTypes.h"
+#include "SpawnQueryGraphNode.h"
 #include "SpawnQuery.h"
 
 #include "PropertyEditorModule.h"
 #include "SpawnQueryEditor.h"
+#include "SGraphNode_SpawnQuery.h"
 
 #include "EdGraphUtilities.h"
 
 static const FName SpawnQuerySystemTabName("SpawnQuerySystem");
 
 const FName FSpawnQueryEditorModule::SpawnQueryEditorAppIdentifier(TEXT("SpawnQueryEditorApp"));
+
+class FGraphPanelNodeFactory_SpawnQuery : public FGraphPanelNodeFactory
+{
+	virtual TSharedPtr<class SGraphNode> CreateNode(UEdGraphNode* Node) const override
+	{
+		if (USpawnQueryGraphNode* SpawnQueryNode = Cast<USpawnQueryGraphNode>(Node))
+		{
+			return SNew(SGraphNode_SpawnQuery, SpawnQueryNode);
+		}
+
+		return NULL;
+	}
+};
+
+
+TSharedPtr<FGraphPanelNodeFactory> GraphPanelNodeFactory_SpawnQuery;
 
 #define LOCTEXT_NAMESPACE "FSpawnQueryEditorModule"
 
@@ -44,6 +62,9 @@ void FSpawnQueryEditorModule::StartupModule()
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(SpawnQuerySystemTabName, FOnSpawnTab::CreateRaw(this, &FSpawnQueryEditorModule::OnSpawnPluginTab))
 		.SetDisplayName(LOCTEXT("FSpawnQuerySystemTabTitle", "SpawnQuerySystem"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
+
+	GraphPanelNodeFactory_SpawnQuery = MakeShareable(new FGraphPanelNodeFactory_SpawnQuery());
+	FEdGraphUtilities::RegisterVisualNodeFactory(GraphPanelNodeFactory_SpawnQuery);
 }
 
 void FSpawnQueryEditorModule::ShutdownModule()
