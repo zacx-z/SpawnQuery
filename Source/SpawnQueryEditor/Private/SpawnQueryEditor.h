@@ -25,6 +25,9 @@ public:
 	virtual FLinearColor GetWorldCentricTabColorScale() const override;
 	//~ End IToolkit Interface
 
+protected:
+	virtual void SaveAsset_Execute() override;
+
 private:
 	/** Create widget for graph editing */
 	TSharedRef<class SGraphEditor> CreateGraphEditorWidget(UEdGraph* InGraph);

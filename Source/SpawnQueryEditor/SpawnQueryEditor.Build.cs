@@ -48,7 +48,7 @@ public class SpawnQueryEditor : ModuleRules
 				"SlateCore",
 				"KismetWidgets",
 				// ... add private dependencies that you statically link with here ...	
-				"SpawnQuery",
+				"SpawnQuery"
 			}
 			);
 		

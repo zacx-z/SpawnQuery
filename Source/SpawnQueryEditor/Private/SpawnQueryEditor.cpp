@@ -92,6 +92,19 @@ FLinearColor FSpawnQueryEditor::GetWorldCentricTabColorScale() const
 	return FLinearColor(0.0f, 0.0f, 0.2f, 0.5f);
 }
 
+void FSpawnQueryEditor::SaveAsset_Execute()
+{
+	if (Query)
+	{
+		USpawnQueryGraph* SpawnQueryGraph = Cast<USpawnQueryGraph>(Query->EdGraph);
+		if (SpawnQueryGraph)
+		{
+			SpawnQueryGraph->UpdateAsset();
+		}
+	}
+	ISpawnQueryEditor::SaveAsset_Execute();
+}
+
 TSharedRef<SGraphEditor> FSpawnQueryEditor::CreateGraphEditorWidget(UEdGraph* InGraph)
 {
 	check(InGraph != NULL);
