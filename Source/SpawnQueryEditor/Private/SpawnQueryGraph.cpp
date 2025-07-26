@@ -106,8 +106,7 @@ namespace SpawnQueryGraphHelpers
 					}
 
 					FSpawnQueryCompositeChild& ChildInfo = CompositeNode->Children.AddDefaulted_GetRef();
-					ChildInfo.ChildComposite = Cast<USpawnQueryNode_Composite>(NodeInstance);
-					ChildInfo.ChildSampler = Cast<USpawnQueryNode_Sampler>(NodeInstance);
+					ChildInfo.ChildNode = NodeInstance;
 
 					CreateSubtree(Asset, NodeInstance, Child, TreeDepth + 1);
 				}

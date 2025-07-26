@@ -13,10 +13,7 @@ struct FSpawnQueryCompositeChild
 
 	/** child node */
 	UPROPERTY()
-	TObjectPtr<USpawnQueryNode_Composite> ChildComposite = nullptr;
-
-	UPROPERTY()
-	TObjectPtr<USpawnQueryNode_Sampler> ChildSampler = nullptr;
+	TObjectPtr<USpawnQueryNode> ChildNode = nullptr;
 };
 
 UCLASS(Abstract, MinimalAPI)

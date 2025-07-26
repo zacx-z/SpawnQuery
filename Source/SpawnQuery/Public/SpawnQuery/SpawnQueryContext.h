@@ -8,8 +8,14 @@
 UCLASS(Abstract, EditInlineNew, MinimalAPI)
 class USpawnQueryContext : public UObject
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 	
 public:
-	
+	FRandomStream& GetRandomStream()
+	{
+		return RandomStream;
+	}
+
+private:
+	FRandomStream RandomStream;
 };

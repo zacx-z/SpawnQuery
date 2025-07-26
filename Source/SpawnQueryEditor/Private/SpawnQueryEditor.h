@@ -3,6 +3,7 @@
 #include "AIGraphEditor.h"
 #include "ISpawnQueryEditor.h"
 
+class IDetailsView;
 class FSpawnTabArgs;
 
 class UEdGraph;
@@ -32,11 +33,20 @@ private:
 	/** Create widget for graph editing */
 	TSharedRef<class SGraphEditor> CreateGraphEditorWidget(UEdGraph* InGraph);
 
+	/** Creates all internal widgets for the tabs to point at */
+	void CreateInternalWidgets();
+
+	/** Called when the selection changes in the GraphEditor */
+	void OnSelectedNodesChanged(const TSet<UObject*>& NewSelection) override;
+
 	/** Spawns the tab with the update graph inside */
 	TSharedRef<SDockTab> SpawnTab_QueryGraph(const FSpawnTabArgs& Args);
+	TSharedRef<SDockTab> SpawnTab_Properties(const FSpawnTabArgs& Args);
 
 private:
 	USpawnQuery* Query;
+	TSharedPtr<IDetailsView> DetailsView;
 
 	static const FName QueryGraphTabId;
+	static const FName PropertiesTabId;
 };

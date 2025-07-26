@@ -10,4 +10,6 @@ class USpawnQueryComposite_PrioritySelector : public USpawnQueryNode_Composite
 	GENERATED_UCLASS_BODY()
 	
 public:
+	virtual bool IsActive(USpawnQueryContext& context) override;
+	virtual TSharedPtr<ISpawnEntryBase> Query(USpawnQueryContext& context) override;
 };

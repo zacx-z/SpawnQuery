@@ -24,4 +24,5 @@ FText USpawnQueryNode::GetDescriptionDetails() const
 void USpawnQueryNode::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 }
+
 #endif //WITH_EDITOR

@@ -1,4 +1,5 @@
 #include "SpawnQuery.h"
+#include "SpawnQuery/SpawnQueryNode.h"
 #include "SpawnQuery/SpawnQueryContext.h"
 
 USpawnQuery::USpawnQuery(const FObjectInitializer& ObjectInitializer)
@@ -6,7 +7,7 @@ USpawnQuery::USpawnQuery(const FObjectInitializer& ObjectInitializer)
 {
 }
 
-ISpawnEntry* USpawnQuery::QueryEntry(USpawnQueryContext& context)
+TSharedPtr<ISpawnEntryBase> USpawnQuery::QueryEntry(USpawnQueryContext& context)
 {
-	return nullptr;
+	return RootNode->Query(context);
 }

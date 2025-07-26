@@ -2,10 +2,12 @@
 #include "SpawnQuery.h"
 #include "SpawnQueryGraph.h"
 #include "SpawnQueryEditorModule.h"
+#include "SpawnQueryGraphNode_Root.h"
 
 #define LOCTEXT_NAMESPACE "SpawnQueryEditor"
 
 const FName FSpawnQueryEditor::QueryGraphTabId(TEXT("SpawnQueryEditor_QueryGraph"));
+const FName FSpawnQueryEditor::PropertiesTabId(TEXT("SpawnQueryEditor_Properties"));
 
 void FSpawnQueryEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>& InTabManager)
 {
@@ -18,6 +20,11 @@ void FSpawnQueryEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>&
 		.SetDisplayName(NSLOCTEXT("SpawnQueryEditor", "Graph", "Graph"))
 		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FAppStyle::GetAppStyleSetName(), "GraphEditor.EventGraph_16x"));
+	
+	InTabManager->RegisterTabSpawner(PropertiesTabId, FOnSpawnTab::CreateSP(this, &FSpawnQueryEditor::SpawnTab_Properties))
+		.SetDisplayName(NSLOCTEXT("SpawnQueryEditor", "PropertiesTab", "Details"))
+		.SetGroup(WorkspaceMenuCategoryRef)
+		.SetIcon(FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.Tabs.Details"));
 }
 
 void FSpawnQueryEditor::UnregisterTabSpawners(const TSharedRef<class FTabManager>& InTabManager)
@@ -25,6 +32,7 @@ void FSpawnQueryEditor::UnregisterTabSpawners(const TSharedRef<class FTabManager
 	FAssetEditorToolkit::UnregisterTabSpawners(InTabManager);
 
 	InTabManager->UnregisterTabSpawner(QueryGraphTabId);
+	InTabManager->UnregisterTabSpawner(PropertiesTabId);
 }
 
 void FSpawnQueryEditor::InitSpawnQueryEditor(const EToolkitMode::Type Mode, const TSharedPtr<class IToolkitHost>& InitToolkitHost, USpawnQuery* InScript)
@@ -49,6 +57,7 @@ void FSpawnQueryEditor::InitSpawnQueryEditor(const EToolkitMode::Type Mode, cons
 				(
 					FTabManager::NewStack()
 					->SetSizeCoefficient(0.3f)
+					->AddTab( PropertiesTabId, ETabState::OpenedTab )
 				)
 			)
 		);
@@ -144,6 +153,58 @@ TSharedRef<SGraphEditor> FSpawnQueryEditor::CreateGraphEditorWidget(UEdGraph* In
 		.GraphEvents(InEvents);
 }
 
+void FSpawnQueryEditor::CreateInternalWidgets()
+{
+	FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>( "PropertyEditor" );
+	FDetailsViewArgs DetailsViewArgs;
+	DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
+	DetailsView = PropertyEditorModule.CreateDetailView( DetailsViewArgs );
+	DetailsView->SetObject( nullptr );
+	//DetailsView->OnFinishedChangingProperties().AddSP(this, &FSpawnQueryEditor::OnFinishedChangingProperties);
+}
+
+void FSpawnQueryEditor::OnSelectedNodesChanged(const TSet<UObject*>& NewSelection)
+{
+	TArray<UObject*> Selection;
+
+	if (NewSelection.Num())
+	{
+		for(TSet<UObject*>::TConstIterator SetIt(NewSelection);SetIt;++SetIt)
+		{
+			USpawnQueryGraphNode* GraphNode = Cast<USpawnQueryGraphNode>(*SetIt);
+			if (GraphNode)
+			{
+				if (GraphNode->IsA(USpawnQueryGraphNode_Root::StaticClass()))
+				{
+					Selection.Add(GraphNode);
+				}
+				else
+				{
+					Selection.Add(GraphNode->NodeInstance);
+				}
+			}
+		}
+	}
+
+	TSharedPtr<FTabManager> TabManagerPtr = GetTabManager();
+	if (TabManagerPtr)
+	{
+		TabManagerPtr->TryInvokeTab(PropertiesTabId);
+	}
+	
+	if (DetailsView)
+	{
+		if (Selection.Num() == 1)
+		{
+			DetailsView->SetObjects(Selection);
+		}
+		else
+		{
+			DetailsView->SetObject(nullptr);
+		}
+	}
+}
+
 TSharedRef<SDockTab> FSpawnQueryEditor::SpawnTab_QueryGraph(const FSpawnTabArgs& Args)
 {
 	check(Args.GetTabId().TabType == QueryGraphTabId);
@@ -175,6 +236,21 @@ TSharedRef<SDockTab> FSpawnQueryEditor::SpawnTab_QueryGraph(const FSpawnTabArgs&
 		[
 			QueryGraphEditor
 		];
+}
+
+TSharedRef<SDockTab> FSpawnQueryEditor::SpawnTab_Properties(const FSpawnTabArgs& Args)
+{
+	check(Args.GetTabId().TabType == PropertiesTabId);
+
+	CreateInternalWidgets();
+
+	TSharedRef<SDockTab> SpawnedTab = SNew(SDockTab)
+		.Label(NSLOCTEXT("EnvironmentQueryEditor", "PropertiesTab", "Details"))
+		[
+			DetailsView.ToSharedRef()
+		];
+
+	return SpawnedTab;
 }
 
 #undef LOCTEXT_NAMESPACE

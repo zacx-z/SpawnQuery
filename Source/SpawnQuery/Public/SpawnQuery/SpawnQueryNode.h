@@ -6,6 +6,8 @@
 //#include "SpawnQuery/SpawnQueryTypes.h"
 #include "SpawnQueryNode.generated.h"
 
+class ISpawnEntryBase;
+class USpawnQueryContext;
 struct FPropertyChangedEvent;
 
 UCLASS(Abstract, MinimalAPI)
@@ -26,4 +28,9 @@ class USpawnQueryNode : public UObject
 #if WITH_EDITOR
 	SPAWNQUERY_API virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif //WITH_EDITOR
+
+public:
+	virtual bool IsActive(USpawnQueryContext& context) PURE_VIRTUAL(USpawnQueryNode::IsActive, return false;);
+	// Implement this function for the behavior upon queries
+	virtual TSharedPtr<ISpawnEntryBase> Query(USpawnQueryContext& context) PURE_VIRTUAL(USpawnQueryNode::Query, return nullptr;);
 };

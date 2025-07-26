@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "SpawnQuery/ISpawnEntry.h"
+#include "SpawnQuery/SpawnEntry.h"
 #include "SpawnQuery.generated.h"
 
 class USpawnQueryNode;
@@ -24,5 +24,5 @@ class USpawnQuery : public UDataAsset
 
 public:
 	
-	ISpawnEntry* QueryEntry(USpawnQueryContext& context);
+	TSharedPtr<ISpawnEntryBase> QueryEntry(USpawnQueryContext& context);
 };
