@@ -6,7 +6,7 @@
 //#include "SpawnQuery/SpawnQueryTypes.h"
 #include "SpawnQueryNode.generated.h"
 
-class ISpawnEntryBase;
+class USpawnEntryBase;
 class USpawnQueryContext;
 struct FPropertyChangedEvent;
 
@@ -32,5 +32,5 @@ class USpawnQueryNode : public UObject
 public:
 	virtual bool IsActive(USpawnQueryContext& context) PURE_VIRTUAL(USpawnQueryNode::IsActive, return false;);
 	// Implement this function for the behavior upon queries
-	virtual TSharedPtr<ISpawnEntryBase> Query(USpawnQueryContext& context) PURE_VIRTUAL(USpawnQueryNode::Query, return nullptr;);
+	virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& context) PURE_VIRTUAL(USpawnQueryNode::Query, return nullptr;);
 };

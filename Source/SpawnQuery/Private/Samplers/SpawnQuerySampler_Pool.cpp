@@ -10,19 +10,21 @@ USpawnQuerySampler_Pool::USpawnQuerySampler_Pool(const FObjectInitializer& Objec
 
 bool USpawnQuerySampler_Pool::IsActive(USpawnQueryContext& context)
 {
-	return PoolTable != nullptr;
+    return PoolTable != nullptr;
 }
 
-TSharedPtr<ISpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& context)
+TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& context)
 {
-	if (PoolTable == nullptr) return nullptr;
-	if (!PoolTable->GetRowStruct()->IsChildOf(FSpawnEntryTableRow::StaticStruct()))
-		return nullptr;
+    if (PoolTable == nullptr) return nullptr;
+    if (!PoolTable->GetRowStruct()->IsChildOf(FSpawnEntryTableRow::StaticStruct()))
+        return nullptr;
 
-	const int32 num = PoolTable->GetRowMap().Num();
-	const int32 index = context.GetRandomStream().RandRange(0, num - 1);
+    const int32 num = PoolTable->GetRowMap().Num();
+    const int32 index = context.GetRandomStream().RandRange(0, num - 1);
 
-	TArray<FName> names = PoolTable->GetRowNames();
-	FSpawnEntryTableRow* row = PoolTable->FindRow<FSpawnEntryTableRow>(names[index], "");
-	return MakeShared<FSpawnEntryRowHandle>(row, PoolTable);
+    TArray<FName> names = PoolTable->GetRowNames();
+    FSpawnEntryTableRow* Row = PoolTable->FindRow<FSpawnEntryTableRow>(names[index], "");
+    USpawnEntryRowHandle* handle = NewObject<USpawnEntryRowHandle>(this); // maybe pool the struct because this function is frequently called
+    handle->InitializeData(Row, PoolTable);
+    return handle;
 }

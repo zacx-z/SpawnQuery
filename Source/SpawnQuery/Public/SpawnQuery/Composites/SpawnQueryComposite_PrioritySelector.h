@@ -7,9 +7,9 @@
 UCLASS(MinimalAPI)
 class USpawnQueryComposite_PrioritySelector : public USpawnQueryNode_Composite
 {
-	GENERATED_UCLASS_BODY()
-	
+    GENERATED_UCLASS_BODY()
+    
 public:
-	virtual bool IsActive(USpawnQueryContext& context) override;
-	virtual TSharedPtr<ISpawnEntryBase> Query(USpawnQueryContext& context) override;
+    virtual bool IsActive(USpawnQueryContext& context) override;
+    virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& context) override;
 };

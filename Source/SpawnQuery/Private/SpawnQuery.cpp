@@ -3,11 +3,16 @@
 #include "SpawnQuery/SpawnQueryContext.h"
 
 USpawnQuery::USpawnQuery(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+    : Super(ObjectInitializer)
 {
 }
 
-TSharedPtr<ISpawnEntryBase> USpawnQuery::QueryEntry(USpawnQueryContext& context)
+TObjectPtr<USpawnEntryBase> USpawnQuery::QueryEntry(USpawnQueryContext& context) const
 {
-	return RootNode->Query(context);
+    return RootNode->Query(context);
+}
+
+USpawnEntryBase* USpawnQuery::QueryEntry(USpawnQueryContext* context) const
+{
+    return QueryEntry(*context);
 }

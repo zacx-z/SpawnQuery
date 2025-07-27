@@ -1,7 +1,5 @@
 #include "SpawnQuery/SpawnQueryNode.h"
 #include "UObject/UnrealType.h"
-#include "DataProviders/AIDataProvider.h"
-#include "DataProviders/AIDataProvider_QueryParams.h"
 #include "SpawnQueryTypes.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(SpawnQueryNode)

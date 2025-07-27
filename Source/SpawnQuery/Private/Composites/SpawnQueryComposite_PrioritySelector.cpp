@@ -8,32 +8,32 @@ USpawnQueryComposite_PrioritySelector::USpawnQueryComposite_PrioritySelector(con
 
 bool USpawnQueryComposite_PrioritySelector::IsActive(USpawnQueryContext& context)
 {
-	for (auto Child : Children)
-	{
-		if (Child.ChildNode->IsActive(context))
-		{
-			return true;
-		}
-	}
-	
-	return false;
+    for (auto Child : Children)
+    {
+        if (Child.ChildNode->IsActive(context))
+        {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
-TSharedPtr<ISpawnEntryBase> USpawnQueryComposite_PrioritySelector::Query(
-	USpawnQueryContext& context)
+TObjectPtr<USpawnEntryBase> USpawnQueryComposite_PrioritySelector::Query(
+    USpawnQueryContext& context)
 {
-	TSharedPtr<ISpawnEntryBase> Entry = nullptr;
+    TObjectPtr<USpawnEntryBase> Entry = nullptr;
 
-	for (auto Child : Children)
-	{
-		if (Child.ChildNode->IsActive(context))
-		{
-			Entry = Child.ChildNode->Query(context);
-			break;
-		}
-	}
+    for (auto Child : Children)
+    {
+        if (Child.ChildNode->IsActive(context))
+        {
+            Entry = Child.ChildNode->Query(context);
+            break;
+        }
+    }
 
-	if (Entry) return Entry;
+    if (Entry) return Entry;
 
-	return Super::Query(context);
+    return Super::Query(context);
 }

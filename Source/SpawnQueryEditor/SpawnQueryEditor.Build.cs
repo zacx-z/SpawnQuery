@@ -46,7 +46,9 @@ public class SpawnQueryEditor : ModuleRules
 				"GraphEditor",
 				"Slate",
 				"SlateCore",
+				"BlueprintGraph",
 				"KismetWidgets",
+				"KismetCompiler",
 				// ... add private dependencies that you statically link with here ...	
 				"SpawnQuery"
 			}

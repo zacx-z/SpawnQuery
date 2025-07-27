@@ -11,18 +11,21 @@ class USpawnQueryContext;
 UCLASS(BlueprintType, MinimalAPI)
 class USpawnQuery : public UDataAsset
 {
-	GENERATED_UCLASS_BODY()
+    GENERATED_UCLASS_BODY()
 
 #if WITH_EDITORONLY_DATA
-	/** Graph for queries */
-	UPROPERTY()
-	TObjectPtr<UEdGraph> EdGraph;
+    /** Graph for queries */
+    UPROPERTY()
+    TObjectPtr<UEdGraph> EdGraph;
 #endif
 
-	UPROPERTY()
-	TObjectPtr<USpawnQueryNode> RootNode;
+    UPROPERTY()
+    TObjectPtr<USpawnQueryNode> RootNode;
 
 public:
-	
-	TSharedPtr<ISpawnEntryBase> QueryEntry(USpawnQueryContext& context);
+    TObjectPtr<USpawnEntryBase> QueryEntry(USpawnQueryContext& context) const;
+
+    // Blueprint version that allocates an UObject
+    UFUNCTION(BlueprintCallable)
+    USpawnEntryBase* QueryEntry(USpawnQueryContext* context) const;
 };

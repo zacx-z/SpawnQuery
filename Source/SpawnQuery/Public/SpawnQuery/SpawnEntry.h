@@ -1,9 +1,10 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "SpawnEntry.generated.h"
 
-class ISpawnEntryBase
+UCLASS(Abstract, MinimalAPI)
+class USpawnEntryBase : public UObject
 {
-public:
-
+    GENERATED_BODY()
 };

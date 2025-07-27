@@ -25,15 +25,22 @@ public:
     int32 MaxAmount;
 };
 
-class FSpawnEntryRowHandle : public ISpawnEntryBase
+UCLASS(BlueprintType)
+class USpawnEntryRowHandle : public USpawnEntryBase
 {
+    GENERATED_BODY()
+
 public:
-    FSpawnEntryRowHandle(FSpawnEntryTableRow* Row, TObjectPtr<UDataTable> PoolTable)
-        : Row(Row), PoolTable(PoolTable)
-    {}
+    void InitializeData(FSpawnEntryTableRow* MyRow, TObjectPtr<UDataTable> MyPoolTable)
+    {
+        Row = MyRow;
+        PoolTable = MyPoolTable;
+    }
 
 private:
     FSpawnEntryTableRow* Row;
+
+    UPROPERTY()
     TObjectPtr<UDataTable> PoolTable;
 
 public:
@@ -45,5 +52,15 @@ public:
             return nullptr;
         }
         return static_cast<T*>(Row);
+    }
+
+    UScriptStruct* GetRowStruct() const
+    {
+        return PoolTable->RowStruct;
+    }
+
+    FSpawnEntryTableRow* GetTableRow() const
+    {
+        return Row;
     }
 };
