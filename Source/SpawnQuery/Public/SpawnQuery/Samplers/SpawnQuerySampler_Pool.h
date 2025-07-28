@@ -10,7 +10,7 @@ class USpawnQuerySampler_Pool : public USpawnQueryNode_Sampler
     GENERATED_UCLASS_BODY()
     
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (RequiredAssetDataTags = "RowStructure=/Script/SpawnQuery.SpawnEntryTableRow"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (RequiredAssetDataTags = "RowStructure=/Script/SpawnQuery.SpawnEntryTableRowBase"))
     TObjectPtr<UDataTable> PoolTable;
 
 public:

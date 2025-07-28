@@ -5,17 +5,23 @@
 #include "UObject/Object.h"
 #include "SpawnQueryContext.generated.h"
 
-UCLASS(Abstract, EditInlineNew, MinimalAPI)
+UCLASS(Abstract, EditInlineNew, Blueprintable)
 class USpawnQueryContext : public UObject
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+    virtual void PostLoad() override;
+    virtual void PostInitProperties() override;
+
 public:
-	FRandomStream& GetRandomStream()
-	{
-		return RandomStream;
-	}
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int32 RandomSeed;
+
+    FRandomStream& GetRandomStream()
+    {
+        return RandomStream;
+    }
 
 private:
-	FRandomStream RandomStream;
+    FRandomStream RandomStream;
 };

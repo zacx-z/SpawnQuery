@@ -35,5 +35,7 @@ TObjectPtr<USpawnEntryBase> USpawnQueryComposite_PrioritySelector::Query(
 
     if (Entry) return Entry;
 
+    UE_LOG(LogBlueprint, Warning, TEXT("No active children available in USpawnQueryComposite_PrioritySelector::Query"));
+    
     return Super::Query(context);
 }

@@ -16,15 +16,19 @@ bool USpawnQuerySampler_Pool::IsActive(USpawnQueryContext& context)
 TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& context)
 {
     if (PoolTable == nullptr) return nullptr;
-    if (!PoolTable->GetRowStruct()->IsChildOf(FSpawnEntryTableRow::StaticStruct()))
+    if (!PoolTable->GetRowStruct()->IsChildOf(FSpawnEntryTableRowBase::StaticStruct()))
+    {
+        UE_LOG(LogBlueprint, Warning, TEXT("Mismatched row struct type in USpawnQuerySampler_Pool::Query"));
         return nullptr;
+    }
 
-    const int32 num = PoolTable->GetRowMap().Num();
-    const int32 index = context.GetRandomStream().RandRange(0, num - 1);
+    const int32 Num = PoolTable->GetRowMap().Num();
+    const int32 Index = context.GetRandomStream().RandRange(0, Num - 1);
 
-    TArray<FName> names = PoolTable->GetRowNames();
-    FSpawnEntryTableRow* Row = PoolTable->FindRow<FSpawnEntryTableRow>(names[index], "");
+    TArray<FName> Names = PoolTable->GetRowNames();
+    FName Name = Names[Index];
+    FSpawnEntryTableRowBase* Row = PoolTable->FindRow<FSpawnEntryTableRowBase>(Name, "");
     USpawnEntryRowHandle* handle = NewObject<USpawnEntryRowHandle>(this); // maybe pool the struct because this function is frequently called
-    handle->InitializeData(Row, PoolTable);
+    handle->InitializeData(Row, Name, PoolTable);
     return handle;
 }

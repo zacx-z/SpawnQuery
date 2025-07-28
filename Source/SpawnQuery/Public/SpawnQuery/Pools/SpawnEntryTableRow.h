@@ -6,17 +6,21 @@
 #include "SpawnEntryTableRow.generated.h"
 
 USTRUCT(BlueprintType)
-struct FSpawnEntryTableRow : public FTableRowBase
+struct FSpawnEntryTableRowBase : public FTableRowBase
 {
     GENERATED_USTRUCT_BODY()
 
 public:
 
-    FSpawnEntryTableRow()
-    : MinAmount(0)
-    , MaxAmount(1)
+    FSpawnEntryTableRowBase()
+        : Weight(1)
+        , MinAmount(0)
+        , MaxAmount(1)
     {
     }
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float Weight;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 MinAmount;
@@ -31,14 +35,16 @@ class USpawnEntryRowHandle : public USpawnEntryBase
     GENERATED_BODY()
 
 public:
-    void InitializeData(FSpawnEntryTableRow* MyRow, TObjectPtr<UDataTable> MyPoolTable)
+    void InitializeData(FSpawnEntryTableRowBase* MyRow, FName MyRowName, TObjectPtr<UDataTable> MyPoolTable)
     {
         Row = MyRow;
+        RowName = MyRowName;
         PoolTable = MyPoolTable;
     }
 
 private:
-    FSpawnEntryTableRow* Row;
+    FSpawnEntryTableRowBase* Row;
+    FName RowName;
 
     UPROPERTY()
     TObjectPtr<UDataTable> PoolTable;
@@ -59,7 +65,13 @@ public:
         return PoolTable->RowStruct;
     }
 
-    FSpawnEntryTableRow* GetTableRow() const
+    UFUNCTION(BlueprintCallable)
+    const FName& GetRowName() const
+    {
+        return RowName;
+    }
+
+    FSpawnEntryTableRowBase* GetTableRow() const
     {
         return Row;
     }

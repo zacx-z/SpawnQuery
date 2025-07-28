@@ -2,7 +2,7 @@
 
 #include "Blueprint/BlueprintExceptionInfo.h"
 
-bool USpawnEntryFunctionLibrary::GetSpawnEntryRow(USpawnEntryRowHandle* Entry, FSpawnEntryTableRow& OutRow)
+bool USpawnEntryFunctionLibrary::GetSpawnEntryRow(USpawnEntryRowHandle* Entry, FSpawnEntryTableRowBase& OutRow)
 {
     // We should never arrive here. Just a stub.
     check(0);

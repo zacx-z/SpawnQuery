@@ -26,6 +26,6 @@ public:
     TObjectPtr<USpawnEntryBase> QueryEntry(USpawnQueryContext& context) const;
 
     // Blueprint version that allocates an UObject
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintPure=false)
     USpawnEntryBase* QueryEntry(USpawnQueryContext* context) const;
 };
