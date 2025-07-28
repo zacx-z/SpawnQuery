@@ -12,23 +12,58 @@ USpawnQuery::USpawnQuery(const FObjectInitializer& ObjectInitializer)
 
 bool USpawnQuery::IsActive(const USpawnQueryContext& Context) const
 {
-    return bActiveByDefault;
+    return Context.IsSpawnQueryActive(this, bActiveByDefault);
 }
 
-TObjectPtr<USpawnEntryBase> USpawnQuery::QueryEntry(USpawnQueryContext& context) const
+void USpawnQuery::SetActiveState(bool bActiveState, USpawnQueryContext& Context) const
 {
-    if (!IsActive(context))
+    Context.SetSpawnQueryActiveState(this, bActiveState);
+}
+
+TObjectPtr<USpawnEntryBase> USpawnQuery::QueryEntry(USpawnQueryContext& Context) const
+{
+    if (!IsActive(Context))
         return nullptr;
 
-    return RootNode->Query(context);
+    return RootNode->Query(Context);
 }
 
-USpawnEntryBase* USpawnQuery::QueryEntry(USpawnQueryContext* context) const
+bool USpawnQuery::IsActive(const USpawnQueryContext* Context)
 {
-    if (context == nullptr)
+    if (Context == nullptr)
+    {
+        Context = GetGlobalContext();
+    }
+
+    return IsActive(*Context);
+}
+
+void USpawnQuery::SetActiveState(bool bActiveState, USpawnQueryContext* Context)
+{
+    if (Context == nullptr)
+    {
+        Context = GetGlobalContext();
+    }
+
+    SetActiveState(bActiveState, *Context);
+}
+
+USpawnEntryBase* USpawnQuery::QueryEntry(USpawnQueryContext* Context)
+{
+    if (Context == nullptr)
+    {
+        Context = GetGlobalContext();
+    }
+    return QueryEntry(*Context);
+}
+
+USpawnQueryContext* USpawnQuery::GetGlobalContext()
+{
+    if (CachedGlobalContext == nullptr)
     {
         FSpawnQueryModule& SpawnQueryEditorModule = FModuleManager::LoadModuleChecked<FSpawnQueryModule>("SpawnQuery");
-        context = SpawnQueryEditorModule.GetDefaultContext();
+        CachedGlobalContext = SpawnQueryEditorModule.GetDefaultContext();
     }
-    return QueryEntry(*context);
+
+    return CachedGlobalContext.Get();
 }

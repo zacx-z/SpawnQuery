@@ -23,6 +23,17 @@ void USpawnQueryContext::Reset()
     RandomStream.Reset();
 }
 
+bool USpawnQueryContext::IsSpawnQueryActive(const USpawnQuery* SpawnQuery, bool bDefault) const
+{
+    const bool* FoundValue = QueryActiveStateMap.Find(SpawnQuery);
+    return FoundValue ? *FoundValue : bDefault;
+}
+
+void USpawnQueryContext::SetSpawnQueryActiveState(const USpawnQuery* SpawnQuery, bool bActiveState)
+{
+    QueryActiveStateMap.Add(SpawnQuery, bActiveState);
+}
+
 void USpawnQueryContext::PushCall(USpawnQuery* Query)
 {
     QueryCallStack.Add(Query);

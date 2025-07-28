@@ -34,9 +34,18 @@ class USpawnQuery : public UDataAsset
 
 public:
     bool IsActive(const USpawnQueryContext& Context) const;
-    TObjectPtr<USpawnEntryBase> QueryEntry(USpawnQueryContext& context) const;
+    void SetActiveState(bool bActiveState, USpawnQueryContext& Context) const;
+    TObjectPtr<USpawnEntryBase> QueryEntry(USpawnQueryContext& Context) const;
 
-    // Blueprint version that allocates an UObject
+    // Blueprint version
+    UFUNCTION(BlueprintCallable)
+    bool IsActive(const USpawnQueryContext* Context = nullptr);
+    UFUNCTION(BlueprintCallable)
+    void SetActiveState(bool bActiveState, USpawnQueryContext* Context = nullptr);
     UFUNCTION(BlueprintPure=false)
-    USpawnEntryBase* QueryEntry(USpawnQueryContext* context = nullptr) const;
+    USpawnEntryBase* QueryEntry(USpawnQueryContext* Context = nullptr);
+
+private:
+    USpawnQueryContext* GetGlobalContext();
+    TWeakObjectPtr<USpawnQueryContext> CachedGlobalContext;
 };
