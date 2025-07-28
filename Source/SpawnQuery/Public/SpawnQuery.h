@@ -27,5 +27,5 @@ public:
 
     // Blueprint version that allocates an UObject
     UFUNCTION(BlueprintPure=false)
-    USpawnEntryBase* QueryEntry(USpawnQueryContext* context) const;
+    USpawnEntryBase* QueryEntry(USpawnQueryContext* context = nullptr) const;
 };

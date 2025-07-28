@@ -15,3 +15,8 @@ void USpawnQueryContext::PostInitProperties()
 
     RandomStream = FRandomStream(RandomSeed);
 }
+
+void USpawnQueryContext::Reset()
+{
+    RandomStream.Reset();
+}

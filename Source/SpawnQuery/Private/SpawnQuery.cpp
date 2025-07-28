@@ -1,4 +1,6 @@
 #include "SpawnQuery.h"
+
+#include "SpawnQueryModule.h"
 #include "SpawnQuery/SpawnQueryNode.h"
 #include "SpawnQuery/SpawnQueryContext.h"
 
@@ -14,5 +16,10 @@ TObjectPtr<USpawnEntryBase> USpawnQuery::QueryEntry(USpawnQueryContext& context)
 
 USpawnEntryBase* USpawnQuery::QueryEntry(USpawnQueryContext* context) const
 {
+    if (context == nullptr)
+    {
+        FSpawnQueryModule& SpawnQueryEditorModule = FModuleManager::LoadModuleChecked<FSpawnQueryModule>("SpawnQuery");
+        context = SpawnQueryEditorModule.GetDefaultContext();
+    }
     return QueryEntry(*context);
 }

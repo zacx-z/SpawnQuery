@@ -19,9 +19,6 @@ public:
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
-	
-	/** This function will be bound to Command (by default it will bring up plugin window) */
-	void PluginButtonClicked();
 
 	virtual TSharedRef<ISpawnQueryEditor> CreateSpawnQueryEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, USpawnQuery* Query);
 	
@@ -30,13 +27,8 @@ public:
 	TSharedPtr<FGraphNodeClassHelper> GetClassCache() { return ClassCache; }
 
 private:
-
-	void RegisterMenus();
-
-
-	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
+    void OnPreBeginPIE(bool bIsSimulating);
 
 private:
 	TSharedPtr<FGraphNodeClassHelper> ClassCache;
-	TSharedPtr<class FUICommandList> PluginCommands;
 };

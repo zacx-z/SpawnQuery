@@ -83,6 +83,7 @@ void UK2Node_GetSpawnEntryRow::AllocateDefaultPins()
 
     // Add SpawnEntry pin
     SpawnEntryPin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Object, USpawnEntryRowHandle::StaticClass(), GetSpawnEntryRowHelper::SpawnEntryPinName);
+    SpawnEntryPin->bDefaultValueIsIgnored = true;
 
     // Result pin
     ResultPin = CreatePin(EGPD_Output, UEdGraphSchema_K2::PC_Wildcard, UEdGraphSchema_K2::PN_ReturnValue);

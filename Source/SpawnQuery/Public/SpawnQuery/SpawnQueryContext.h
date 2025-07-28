@@ -5,7 +5,7 @@
 #include "UObject/Object.h"
 #include "SpawnQueryContext.generated.h"
 
-UCLASS(Abstract, EditInlineNew, Blueprintable)
+UCLASS(EditInlineNew, Blueprintable)
 class USpawnQueryContext : public UObject
 {
     GENERATED_BODY()
@@ -21,6 +21,8 @@ public:
     {
         return RandomStream;
     }
+
+    SPAWNQUERY_API void Reset();
 
 private:
     FRandomStream RandomStream;
