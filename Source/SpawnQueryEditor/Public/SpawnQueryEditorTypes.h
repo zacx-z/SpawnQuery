@@ -6,16 +6,16 @@
 
 struct FCompareNodeXLocation
 {
-	FORCEINLINE bool operator()(const UEdGraphPin& A, const UEdGraphPin& B) const
-	{
-		const UEdGraphNode* NodeA = A.GetOwningNode();
-		const UEdGraphNode* NodeB = B.GetOwningNode();
+    FORCEINLINE bool operator()(const UEdGraphPin& A, const UEdGraphPin& B) const
+    {
+        const UEdGraphNode* NodeA = A.GetOwningNode();
+        const UEdGraphNode* NodeB = B.GetOwningNode();
 
-		if (NodeA->NodePosX == NodeB->NodePosX)
-		{
-			return NodeA->NodePosY < NodeB->NodePosY;
-		}
+        if (NodeA->NodePosX == NodeB->NodePosX)
+        {
+            return NodeA->NodePosY < NodeB->NodePosY;
+        }
 
-		return NodeA->NodePosX < NodeB->NodePosX;
-	}
+        return NodeA->NodePosX < NodeB->NodePosX;
+    }
 };
