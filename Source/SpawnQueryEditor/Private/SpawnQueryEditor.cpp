@@ -2,12 +2,29 @@
 #include "SpawnQuery.h"
 #include "SpawnQueryGraph.h"
 #include "SpawnQueryEditorModule.h"
+#include "SpawnQueryEditorStyle.h"
 #include "SpawnQueryGraphNode_Root.h"
 
 #define LOCTEXT_NAMESPACE "SpawnQueryEditor"
 
 const FName FSpawnQueryEditor::QueryGraphTabId(TEXT("SpawnQueryEditor_QueryGraph"));
 const FName FSpawnQueryEditor::PropertiesTabId(TEXT("SpawnQueryEditor_Properties"));
+
+class FEnvQueryCommands : public TCommands<FEnvQueryCommands>
+{
+public:
+    FEnvQueryCommands() : TCommands<FEnvQueryCommands>("SpawnQueryEditor", LOCTEXT("SpawnQuery", "SpawnQuery"), NAME_None, FSpawnQueryEditorStyle::GetStyleSetName())
+    {
+    }
+
+    TSharedPtr<FUICommandInfo> Settings;
+
+    /** Initialize commands */
+    virtual void RegisterCommands() override
+    {
+        UI_COMMAND(Settings, "Settings", "Open SpawnQuery Settings", EUserInterfaceActionType::Button, FInputChord());
+    }
+};
 
 void FSpawnQueryEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>& InTabManager)
 {
@@ -68,6 +85,8 @@ void FSpawnQueryEditor::InitSpawnQueryEditor(const EToolkitMode::Type Mode, cons
 
     FSpawnQueryEditorModule& SpawnQueryEditorModule = FModuleManager::LoadModuleChecked<FSpawnQueryEditorModule>("SpawnQueryEditor");
 
+    BindCommands();
+    ExtendToolbar();
     RegenerateMenusAndToolbars();
 
     // Update asset data based on saved graph to have correct data in editor
@@ -112,6 +131,48 @@ void FSpawnQueryEditor::SaveAsset_Execute()
         }
     }
     ISpawnQueryEditor::SaveAsset_Execute();
+}
+
+void FSpawnQueryEditor::BindCommands()
+{
+    FEnvQueryCommands::Register();
+
+    ToolkitCommands->MapAction(FEnvQueryCommands::Get().Settings,
+        FExecuteAction::CreateSP(this, &FSpawnQueryEditor::OnToolbar_OpenSettings)
+        );
+}
+
+void FSpawnQueryEditor::ExtendToolbar()
+{
+    struct Local
+    {
+        static void FillToolbar(FToolBarBuilder& ToolbarBuilder)
+        {
+            ToolbarBuilder.BeginSection("Settings");
+            {
+                ToolbarBuilder.AddToolBarButton(FEnvQueryCommands::Get().Settings);
+            }
+            ToolbarBuilder.EndSection();
+        }
+    };
+
+    TSharedPtr<FExtender> ToolbarExtender = MakeShareable(new FExtender);
+    ToolbarExtender->AddToolBarExtension(
+        "Asset",
+        EExtensionHook::After,
+        ToolkitCommands,
+        FToolBarExtensionDelegate::CreateStatic(&Local::FillToolbar)
+        );
+
+    AddToolbarExtender(ToolbarExtender);
+}
+
+void FSpawnQueryEditor::OnToolbar_OpenSettings()
+{
+    if (DetailsView)
+    {
+        DetailsView->SetObject(Query);
+    }
 }
 
 TSharedRef<SGraphEditor> FSpawnQueryEditor::CreateGraphEditorWidget(UEdGraph* InGraph)

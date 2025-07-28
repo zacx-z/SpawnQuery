@@ -28,6 +28,10 @@ public:
 
 protected:
     virtual void SaveAsset_Execute() override;
+    void BindCommands();
+    void ExtendToolbar();
+
+    void OnToolbar_OpenSettings();
 
 private:
     /** Create widget for graph editing */
@@ -44,7 +48,7 @@ private:
     TSharedRef<SDockTab> SpawnTab_Properties(const FSpawnTabArgs& Args);
 
 private:
-    USpawnQuery* Query;
+    USpawnQuery* Query = nullptr;
     TSharedPtr<IDetailsView> DetailsView;
 
     static const FName QueryGraphTabId;

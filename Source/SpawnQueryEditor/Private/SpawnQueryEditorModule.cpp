@@ -16,6 +16,7 @@
 #include "SGraphNode_SpawnQuery.h"
 
 #include "EdGraphUtilities.h"
+#include "SpawnQueryEditorStyle.h"
 #include "SpawnQueryModule.h"
 
 const FName FSpawnQueryEditorModule::SpawnQueryEditorAppIdentifier(TEXT("SpawnQueryEditorApp"));
@@ -41,6 +42,9 @@ TSharedPtr<FGraphPanelNodeFactory> GraphPanelNodeFactory_SpawnQuery;
 void FSpawnQueryEditorModule::StartupModule()
 {
     // This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+    FSpawnQueryEditorStyle::Initialize();
+    FSpawnQueryEditorStyle::ReloadTextures();
+
     GraphPanelNodeFactory_SpawnQuery = MakeShareable(new FGraphPanelNodeFactory_SpawnQuery());
     FEdGraphUtilities::RegisterVisualNodeFactory(GraphPanelNodeFactory_SpawnQuery);
 

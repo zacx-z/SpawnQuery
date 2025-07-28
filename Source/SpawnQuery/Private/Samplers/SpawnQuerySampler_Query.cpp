@@ -5,12 +5,12 @@
 
 bool USpawnQuerySampler_Query::IsActive(USpawnQueryContext& context)
 {
-    return QueryGraph != nullptr;
+    return QueryGraph != nullptr && QueryGraph->IsActive(context);
 }
 
 TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Query::Query(USpawnQueryContext& context)
 {
-    if (QueryGraph == nullptr) return nullptr;
+    if (QueryGraph == nullptr || !QueryGraph->IsActive(context)) return nullptr;
 
     if (context.HasQueryInCallStack(QueryGraph))
     {

@@ -22,7 +22,18 @@ class USpawnQuery : public UDataAsset
     UPROPERTY()
     TObjectPtr<USpawnQueryNode> RootNode;
 
+    /**
+     * Defaults to true. The active state of this graph when a context is just created.
+     *
+     * If a graph is inactive, it won't return any entry.
+     * Invocation node to this graph will also be regarded inactive.
+     * By toggling a graph's active state at runtime, customized behaviors at graph level are made possible.
+     */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool bActiveByDefault;
+
 public:
+    bool IsActive(const USpawnQueryContext& Context) const;
     TObjectPtr<USpawnEntryBase> QueryEntry(USpawnQueryContext& context) const;
 
     // Blueprint version that allocates an UObject
