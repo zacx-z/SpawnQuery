@@ -8,5 +8,5 @@ USpawnQueryNode_Sampler::USpawnQueryNode_Sampler(const FObjectInitializer& Objec
 
 void USpawnQueryNode_Sampler::PostLoad()
 {
-	Super::PostLoad();
+    Super::PostLoad();
 }

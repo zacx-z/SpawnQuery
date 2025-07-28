@@ -9,128 +9,128 @@
 #include "SpawnQuery/SpawnQueryNode_Sampler.h"
 
 USpawnQueryGraph::USpawnQueryGraph(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+    : Super(ObjectInitializer)
 {
-	Schema = UEdGraphSchema_SpawnQuery::StaticClass();
+    Schema = UEdGraphSchema_SpawnQuery::StaticClass();
 }
 
 void USpawnQueryGraph::Initialize()
 {
-	Super::Initialize();
+    Super::Initialize();
 
-	LockUpdates();
-	SpawnMissingNodes();
-	UnlockUpdates();
+    LockUpdates();
+    SpawnMissingNodes();
+    UnlockUpdates();
 }
 
 void USpawnQueryGraph::OnLoaded()
 {
-	Super::OnLoaded();
+    Super::OnLoaded();
 }
 
 void USpawnQueryGraph::UpdateAsset(int32 UpdateFlags)
 {
-	if (bLockUpdates)
-	{
-		return;
-	}
+    if (bLockUpdates)
+    {
+        return;
+    }
 
-	USpawnQueryGraphNode_Root* RootNode = nullptr;
+    USpawnQueryGraphNode_Root* RootNode = nullptr;
 
-	for (auto UntypedNode : Nodes)
-	{
-		USpawnQueryGraphNode* Node = Cast<USpawnQueryGraphNode>(UntypedNode);
-		if (Node == nullptr)
-		{
-			continue;
-		}
+    for (auto UntypedNode : Nodes)
+    {
+        USpawnQueryGraphNode* Node = Cast<USpawnQueryGraphNode>(UntypedNode);
+        if (Node == nullptr)
+        {
+            continue;
+        }
 
-		// cache root
-		if (RootNode == nullptr)
-		{
-			RootNode = Cast<USpawnQueryGraphNode_Root>(Node);
-		}
-	}
+        // cache root
+        if (RootNode == nullptr)
+        {
+            RootNode = Cast<USpawnQueryGraphNode_Root>(Node);
+        }
+    }
 
-	USpawnQueryGraphNode* Node = nullptr;
-	
-	if (RootNode && RootNode->Pins.Num() > 0 && RootNode->Pins[0]->LinkedTo.Num() > 0)
-	{
-		UEdGraphPin* Pin = RootNode->Pins[0];
-		Node = Cast<USpawnQueryGraphNode>(Pin->LinkedTo[0]->GetOwningNode()); // the node under root node
-	}
+    USpawnQueryGraphNode* Node = nullptr;
+    
+    if (RootNode && RootNode->Pins.Num() > 0 && RootNode->Pins[0]->LinkedTo.Num() > 0)
+    {
+        UEdGraphPin* Pin = RootNode->Pins[0];
+        Node = Cast<USpawnQueryGraphNode>(Pin->LinkedTo[0]->GetOwningNode()); // the node under root node
+    }
 
-	BuildQueryTree(Node);
+    BuildQueryTree(Node);
 }
 
 namespace SpawnQueryGraphHelpers
 {
-	void CreateSubtree(USpawnQuery* Asset, USpawnQueryNode* RootNode, const USpawnQueryGraphNode* RootEdNode, uint8 TreeDepth)
-	{
-		if (RootEdNode == nullptr || RootNode == nullptr)
-		{
-			return;
-		}
+    void CreateSubtree(USpawnQuery* Asset, USpawnQueryNode* RootNode, const USpawnQueryGraphNode* RootEdNode, uint8 TreeDepth)
+    {
+        if (RootEdNode == nullptr || RootNode == nullptr)
+        {
+            return;
+        }
 
-		if (Cast<USpawnQuery>(RootNode->GetOuter()) == nullptr)
-		{
-			RootNode->Rename(nullptr, Asset);
-		}
+        if (Cast<USpawnQuery>(RootNode->GetOuter()) == nullptr)
+        {
+            RootNode->Rename(nullptr, Asset);
+        }
 
-		if (USpawnQueryNode_Composite* CompositeNode = Cast<USpawnQueryNode_Composite>(RootNode))
-		{
-			CompositeNode->Children.Reset();
+        if (USpawnQueryNode_Composite* CompositeNode = Cast<USpawnQueryNode_Composite>(RootNode))
+        {
+            CompositeNode->Children.Reset();
 
-			for (UEdGraphPin* Pin : RootEdNode->Pins)
-			{
-				if (Pin->Direction != EGPD_Output)
-				{
-					continue;
-				}
+            for (UEdGraphPin* Pin : RootEdNode->Pins)
+            {
+                if (Pin->Direction != EGPD_Output)
+                {
+                    continue;
+                }
 
-				Pin->LinkedTo.Sort(FCompareNodeXLocation());
+                Pin->LinkedTo.Sort(FCompareNodeXLocation());
 
-				for (UEdGraphPin* ChildPin : Pin->LinkedTo)
-				{
-					USpawnQueryGraphNode* Child = Cast<USpawnQueryGraphNode>(ChildPin->GetOwningNode());
-					if (Child == nullptr)
-					{
-						continue;
-					}
+                for (UEdGraphPin* ChildPin : Pin->LinkedTo)
+                {
+                    USpawnQueryGraphNode* Child = Cast<USpawnQueryGraphNode>(ChildPin->GetOwningNode());
+                    if (Child == nullptr)
+                    {
+                        continue;
+                    }
 
-					USpawnQueryNode* NodeInstance = Cast<USpawnQueryNode>(Child->NodeInstance);
+                    USpawnQueryNode* NodeInstance = Cast<USpawnQueryNode>(Child->NodeInstance);
 
-					if (NodeInstance == nullptr)
-					{
-						continue;
-					}
+                    if (NodeInstance == nullptr)
+                    {
+                        continue;
+                    }
 
-					FSpawnQueryCompositeChild& ChildInfo = CompositeNode->Children.AddDefaulted_GetRef();
-					ChildInfo.ChildNode = NodeInstance;
+                    FSpawnQueryCompositeChild& ChildInfo = CompositeNode->Children.AddDefaulted_GetRef();
+                    ChildInfo.ChildNode = NodeInstance;
 
-					CreateSubtree(Asset, NodeInstance, Child, TreeDepth + 1);
-				}
-			}
-		}
-	}
+                    CreateSubtree(Asset, NodeInstance, Child, TreeDepth + 1);
+                }
+            }
+        }
+    }
 } // namespace SpawnQueryGraphHelpers
 
 void USpawnQueryGraph::SpawnMissingNodes()
 {
-	// This function is intended to spawn any missing nodes in the graph.
-	// The actual implementation would depend on the specific requirements of the SpawnQuery system.
-	// For now, we can leave it empty or implement a basic logic to ensure all necessary nodes are present.
+    // This function is intended to spawn any missing nodes in the graph.
+    // The actual implementation would depend on the specific requirements of the SpawnQuery system.
+    // For now, we can leave it empty or implement a basic logic to ensure all necessary nodes are present.
 }
 
 void USpawnQueryGraph::BuildQueryTree(USpawnQueryGraphNode* RootEdNode)
 {
-	USpawnQuery* Asset = Cast<USpawnQuery>(GetOuter());
+    USpawnQuery* Asset = Cast<USpawnQuery>(GetOuter());
 
-	Asset->RootNode = nullptr;
+    Asset->RootNode = nullptr;
 
-	if (RootEdNode)
-	{
-		Asset->RootNode = Cast<USpawnQueryNode>(RootEdNode->NodeInstance);
-		SpawnQueryGraphHelpers::CreateSubtree(Asset, Asset->RootNode, RootEdNode, 1);
-	}
+    if (RootEdNode)
+    {
+        Asset->RootNode = Cast<USpawnQueryNode>(RootEdNode->NodeInstance);
+        SpawnQueryGraphHelpers::CreateSubtree(Asset, Asset->RootNode, RootEdNode, 1);
+    }
 }

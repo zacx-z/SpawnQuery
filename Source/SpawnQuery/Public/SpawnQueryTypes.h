@@ -12,9 +12,9 @@
 UCLASS(Abstract, MinimalAPI)
 class USpawnQueryTypes : public UObject
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
 
-	static SPAWNQUERY_API FText GetShortTypeName(const UObject* Ob);
+    static SPAWNQUERY_API FText GetShortTypeName(const UObject* Ob);
 };

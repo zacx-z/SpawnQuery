@@ -10,12 +10,12 @@ USpawnQueryNode::USpawnQueryNode(const FObjectInitializer& ObjectInitializer) : 
 
 FText USpawnQueryNode::GetDescriptionTitle() const
 {
-	return USpawnQueryTypes::GetShortTypeName(this);
+    return USpawnQueryTypes::GetShortTypeName(this);
 }
 
 FText USpawnQueryNode::GetDescriptionDetails() const
 {
-	return FText::GetEmpty();
+    return FText::GetEmpty();
 }
 
 #if WITH_EDITOR

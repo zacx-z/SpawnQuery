@@ -4,44 +4,44 @@
 
 USpawnQueryGraphNode_Root::USpawnQueryGraphNode_Root(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	bIsReadOnly = true;
+    bIsReadOnly = true;
 }
 
 void USpawnQueryGraphNode_Root::AllocateDefaultPins()
 {
-	UEdGraphPin* Outputs = CreatePin(EGPD_Output, TEXT("Transition"), TEXT("Out"));
+    UEdGraphPin* Outputs = CreatePin(EGPD_Output, TEXT("Transition"), TEXT("Out"));
 }
 
 FText USpawnQueryGraphNode_Root::GetNodeTitle(ENodeTitleType::Type TitleType) const
 {
-	return NSLOCTEXT("SpawnQueryEditor", "Root", "ROOT");
+    return NSLOCTEXT("SpawnQueryEditor", "Root", "ROOT");
 }
 
 void USpawnQueryGraphNode_Root::LogDebugMessage(const FString& Message)
 {
-	if (DebugMessages.Num() == 0)
-	{
-		bHasDebugError = false;
-	}
+    if (DebugMessages.Num() == 0)
+    {
+        bHasDebugError = false;
+    }
 
-	// store only 1 error message, discard everything after it
-	if (!bHasDebugError)
-	{
-		DebugMessages.Add(Message);
-	}
+    // store only 1 error message, discard everything after it
+    if (!bHasDebugError)
+    {
+        DebugMessages.Add(Message);
+    }
 }
 
 void USpawnQueryGraphNode_Root::LogDebugError(const FString& Message)
 {
-	if (DebugMessages.Num() == 0)
-	{
-		bHasDebugError = false;
-	}
+    if (DebugMessages.Num() == 0)
+    {
+        bHasDebugError = false;
+    }
 
-	// store only 1 error message, discard everything after it
-	if (!bHasDebugError)
-	{
-		DebugMessages.Add(Message);
-		bHasDebugError = true;
-	}
+    // store only 1 error message, discard everything after it
+    if (!bHasDebugError)
+    {
+        DebugMessages.Add(Message);
+        bHasDebugError = true;
+    }
 }

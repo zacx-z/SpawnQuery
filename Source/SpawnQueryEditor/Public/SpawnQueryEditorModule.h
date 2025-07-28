@@ -16,19 +16,19 @@ class FSpawnQueryEditorModule : public IModuleInterface
 {
 public:
 
-	/** IModuleInterface implementation */
-	virtual void StartupModule() override;
-	virtual void ShutdownModule() override;
+    /** IModuleInterface implementation */
+    virtual void StartupModule() override;
+    virtual void ShutdownModule() override;
 
-	virtual TSharedRef<ISpawnQueryEditor> CreateSpawnQueryEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, USpawnQuery* Query);
-	
-	static const FName SpawnQueryEditorAppIdentifier;
+    virtual TSharedRef<ISpawnQueryEditor> CreateSpawnQueryEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, USpawnQuery* Query);
+    
+    static const FName SpawnQueryEditorAppIdentifier;
 
-	TSharedPtr<FGraphNodeClassHelper> GetClassCache() { return ClassCache; }
+    TSharedPtr<FGraphNodeClassHelper> GetClassCache() { return ClassCache; }
 
 private:
     void OnPreBeginPIE(bool bIsSimulating);
 
 private:
-	TSharedPtr<FGraphNodeClassHelper> ClassCache;
+    TSharedPtr<FGraphNodeClassHelper> ClassCache;
 };

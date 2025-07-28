@@ -10,36 +10,36 @@
 class UToolMenu;
 
 USpawnQueryGraphNode_Sampler::USpawnQueryGraphNode_Sampler(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+    : Super(ObjectInitializer)
 {
 }
 
 void USpawnQueryGraphNode_Sampler::AllocateDefaultPins()
 {
-	CreatePin(EGPD_Input, "MultipleNodes", TEXT("In"));
+    CreatePin(EGPD_Input, "MultipleNodes", TEXT("In"));
 }
 
 FText USpawnQueryGraphNode_Sampler::GetNodeTitle(ENodeTitleType::Type TitleType) const
 {
-	const USpawnQueryNode* MyNode = Cast<USpawnQueryNode>(NodeInstance);
-	if (MyNode != NULL)
-	{
-		return MyNode->GetDescriptionTitle();
-	}
-	return Super::GetNodeTitle(TitleType);
+    const USpawnQueryNode* MyNode = Cast<USpawnQueryNode>(NodeInstance);
+    if (MyNode != NULL)
+    {
+        return MyNode->GetDescriptionTitle();
+    }
+    return Super::GetNodeTitle(TitleType);
 }
 
 FText USpawnQueryGraphNode_Sampler::GetDescription() const
 {
-	return Super::GetDescription();
+    return Super::GetDescription();
 }
 
 FText USpawnQueryGraphNode_Sampler::GetTooltipText() const
 {
-	return Super::GetTooltipText();
+    return Super::GetTooltipText();
 }
 
 void USpawnQueryGraphNode_Sampler::GetNodeContextMenuActions(UToolMenu* Menu, UGraphNodeContextMenuContext* Context) const
 {
-	Super::GetNodeContextMenuActions(Menu, Context);
+    Super::GetNodeContextMenuActions(Menu, Context);
 }

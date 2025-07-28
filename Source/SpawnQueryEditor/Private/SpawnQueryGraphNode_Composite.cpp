@@ -10,31 +10,31 @@
 class UToolMenu;
 
 USpawnQueryGraphNode_Composite::USpawnQueryGraphNode_Composite(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+    : Super(ObjectInitializer)
 {
 }
 
 FText USpawnQueryGraphNode_Composite::GetNodeTitle(ENodeTitleType::Type TitleType) const
 {
-	const USpawnQueryNode* MyNode = Cast<USpawnQueryNode>(NodeInstance);
-	if (MyNode != NULL)
-	{
-		return MyNode->GetDescriptionTitle();
-	}
-	return Super::GetNodeTitle(TitleType);
+    const USpawnQueryNode* MyNode = Cast<USpawnQueryNode>(NodeInstance);
+    if (MyNode != NULL)
+    {
+        return MyNode->GetDescriptionTitle();
+    }
+    return Super::GetNodeTitle(TitleType);
 }
 
 FText USpawnQueryGraphNode_Composite::GetDescription() const
 {
-	return Super::GetDescription();
+    return Super::GetDescription();
 }
 
 FText USpawnQueryGraphNode_Composite::GetTooltipText() const
 {
-	return Super::GetTooltipText();
+    return Super::GetTooltipText();
 }
 
 void USpawnQueryGraphNode_Composite::GetNodeContextMenuActions(UToolMenu* Menu, UGraphNodeContextMenuContext* Context) const
 {
-	Super::GetNodeContextMenuActions(Menu, Context);
+    Super::GetNodeContextMenuActions(Menu, Context);
 }

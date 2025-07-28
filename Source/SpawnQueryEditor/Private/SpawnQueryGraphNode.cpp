@@ -10,26 +10,26 @@ USpawnQueryGraphNode::USpawnQueryGraphNode(const FObjectInitializer& ObjectIniti
 
 void USpawnQueryGraphNode::AllocateDefaultPins()
 {
-	CreatePin(EGPD_Input, "MultipleNodes", TEXT("In"));
-	CreatePin(EGPD_Output, "MultipleNodes", TEXT("Out"));
+    CreatePin(EGPD_Input, "MultipleNodes", TEXT("In"));
+    CreatePin(EGPD_Output, "MultipleNodes", TEXT("Out"));
 }
 
 FText USpawnQueryGraphNode::GetNodeTitle(ENodeTitleType::Type TitleType) const
 {
-	return FText::GetEmpty();
+    return FText::GetEmpty();
 }
 
 FText USpawnQueryGraphNode::GetDescription() const
 {
-	return FText::GetEmpty();
+    return FText::GetEmpty();
 }
 
 USpawnQueryGraph* USpawnQueryGraphNode::GetSpawnQueryGraph()
 {
-	return CastChecked<USpawnQueryGraph>(GetGraph());
+    return CastChecked<USpawnQueryGraph>(GetGraph());
 }
 
 bool USpawnQueryGraphNode::CanCreateUnderSpecifiedSchema(const UEdGraphSchema* DesiredSchema) const
 {
-	return DesiredSchema->GetClass()->IsChildOf(UEdGraphSchema_SpawnQuery::StaticClass());
+    return DesiredSchema->GetClass()->IsChildOf(UEdGraphSchema_SpawnQuery::StaticClass());
 }

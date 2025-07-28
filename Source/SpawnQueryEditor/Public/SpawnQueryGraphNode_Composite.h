@@ -14,13 +14,13 @@ class UObject;
 UCLASS()
 class SPAWNQUERYEDITOR_API USpawnQueryGraphNode_Composite : public USpawnQueryGraphNode
 {
-	GENERATED_UCLASS_BODY()
+    GENERATED_UCLASS_BODY()
 
-	virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
-	virtual FText GetDescription() const override;
-	virtual FText GetTooltipText() const override;
-	virtual bool RefreshNodeClass() override { return false; }
+    virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
+    virtual FText GetDescription() const override;
+    virtual FText GetTooltipText() const override;
+    virtual bool RefreshNodeClass() override { return false; }
 
-	/** Gets a list of actions that can be done to this particular node */
-	virtual void GetNodeContextMenuActions(class UToolMenu* Menu, class UGraphNodeContextMenuContext* Context) const override;
+    /** Gets a list of actions that can be done to this particular node */
+    virtual void GetNodeContextMenuActions(class UToolMenu* Menu, class UGraphNodeContextMenuContext* Context) const override;
 };

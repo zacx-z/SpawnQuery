@@ -9,19 +9,19 @@ class USpawnQueryNode_Sampler;
 USTRUCT()
 struct FSpawnQueryCompositeChild
 {
-	GENERATED_USTRUCT_BODY()
+    GENERATED_USTRUCT_BODY()
 
-	/** child node */
-	UPROPERTY()
-	TObjectPtr<USpawnQueryNode> ChildNode = nullptr;
+    /** child node */
+    UPROPERTY()
+    TObjectPtr<USpawnQueryNode> ChildNode = nullptr;
 };
 
 UCLASS(Abstract, MinimalAPI)
 class USpawnQueryNode_Composite : public USpawnQueryNode
 {
-	GENERATED_UCLASS_BODY()
+    GENERATED_UCLASS_BODY()
 
-	/** child nodes */
-	UPROPERTY()
-	TArray<FSpawnQueryCompositeChild> Children;
+    /** child nodes */
+    UPROPERTY()
+    TArray<FSpawnQueryCompositeChild> Children;
 };

@@ -10,7 +10,7 @@
 UCLASS(EditInlineNew, Abstract, meta = (Category = "Samplers"), MinimalAPI)
 class USpawnQueryNode_Sampler : public USpawnQueryNode
 {
-	GENERATED_UCLASS_BODY()
+    GENERATED_UCLASS_BODY()
 
-	SPAWNQUERY_API virtual void PostLoad() override;
+    SPAWNQUERY_API virtual void PostLoad() override;
 };
