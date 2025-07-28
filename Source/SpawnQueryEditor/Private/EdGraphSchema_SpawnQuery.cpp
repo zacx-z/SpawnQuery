@@ -112,5 +112,11 @@ const FPinConnectionResponse UEdGraphSchema_SpawnQuery::CanCreateConnection(cons
         return FPinConnectionResponse(CONNECT_RESPONSE_DISALLOW, TEXT(""));
     }
 
+    if (PinA->GetOwningNode()->IsA(USpawnQueryGraphNode_Root::StaticClass()) && PinA->LinkedTo.Num() > 0 ||
+        PinB->GetOwningNode()->IsA(USpawnQueryGraphNode_Root::StaticClass()) && PinB->LinkedTo.Num() > 0)
+    {
+        return FPinConnectionResponse(CONNECT_RESPONSE_DISALLOW, TEXT("Only one connection is allowed on Root node"));
+    }
+
     return FPinConnectionResponse(CONNECT_RESPONSE_MAKE, TEXT(""));
 }
