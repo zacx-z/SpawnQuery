@@ -33,7 +33,7 @@ public:
     /**
      * Whether or not to be considered as a valid path to generate a result entry
      */
-    virtual bool IsActive(USpawnQueryContext& Context) PURE_VIRTUAL(USpawnQueryNode::IsActive, return false;);
+    virtual bool IsActive(const USpawnQueryContext& Context) PURE_VIRTUAL(USpawnQueryNode::IsActive, return false;);
     /**
      * Implement this function for the behavior upon queries
      */

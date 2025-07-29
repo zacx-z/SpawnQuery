@@ -10,6 +10,7 @@ namespace SpawnQueryColors
     {
         const FLinearColor Default(0.15f, 0.15f, 0.15f);
         const FLinearColor Sample(0.0f, 0.07f, 0.4f);
+        const FLinearColor Inactive(0.3f, 0.4f, 0.4f);
         const FLinearColor Error(1.0f, 0.0f, 0.0f);
     }
 

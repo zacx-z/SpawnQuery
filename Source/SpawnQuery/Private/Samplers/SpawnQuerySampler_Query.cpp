@@ -3,7 +3,7 @@
 #include "SpawnQuery.h"
 #include "SpawnQuery/SpawnQueryContext.h"
 
-bool USpawnQuerySampler_Query::IsActive(USpawnQueryContext& context)
+bool USpawnQuerySampler_Query::IsActive(const USpawnQueryContext& context)
 {
     return QueryGraph != nullptr && QueryGraph->IsActive(context);
 }

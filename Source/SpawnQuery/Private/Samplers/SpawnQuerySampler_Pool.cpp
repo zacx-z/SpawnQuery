@@ -23,7 +23,7 @@ void USpawnQuerySampler_Pool::PreEditChange(FProperty* PropertyAboutToChange)
 
 #endif
 
-bool USpawnQuerySampler_Pool::IsActive(USpawnQueryContext& context)
+bool USpawnQuerySampler_Pool::IsActive(const USpawnQueryContext& context)
 {
     return PoolTable != nullptr;
 }

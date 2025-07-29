@@ -19,6 +19,7 @@
 #include "Widgets/SOverlay.h"
 #include "Widgets/Text/SInlineEditableTextBlock.h"
 #include "SLevelOfDetailBranchNode.h"
+#include "SpawnQueryDebugger.h"
 #include "Widgets/Text/STextBlock.h"
 
 #define LOCTEXT_NAMESPACE "SpawnQueryEditor"
@@ -53,6 +54,11 @@ void SGraphNode_SpawnQuery::Construct(const FArguments& InArgs, USpawnQueryGraph
     SGraphNodeAI::Construct(SGraphNodeAI::FArguments(), InNode);
 }
 
+void SGraphNode_SpawnQuery::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
+{
+    SGraphNodeAI::Tick(AllottedGeometry, InCurrentTime, InDeltaTime);
+}
+
 void SGraphNode_SpawnQuery::AddSubNode(TSharedPtr<SGraphNode> SubNodeWidget)
 {
     SGraphNodeAI::AddSubNode(SubNodeWidget);
@@ -83,6 +89,11 @@ FSlateColor SGraphNode_SpawnQuery::GetBackgroundColor() const
         {
             NodeColor = SpawnQueryColors::NodeBody::Sample;
         }
+    }
+
+    if (FSpawnQueryDebugger::IsPIESimulating() && !MyNode->bDebuggerActiveState)
+    {
+        NodeColor = SpawnQueryColors::NodeBody::Inactive;
     }
 
     if (!MyNode || MyNode->HasErrors())

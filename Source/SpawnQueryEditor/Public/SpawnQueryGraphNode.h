@@ -17,4 +17,10 @@ class SPAWNQUERYEDITOR_API USpawnQueryGraphNode : public UAIGraphNode
     virtual FText GetDescription() const override;
 
     virtual bool CanCreateUnderSpecifiedSchema(const UEdGraphSchema* DesiredSchema) const override;
+
+public:
+
+    //~ Begin debugger variables
+    bool bDebuggerActiveState;
+    //~ End debugger variables
 };

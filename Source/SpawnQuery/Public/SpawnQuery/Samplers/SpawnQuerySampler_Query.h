@@ -11,7 +11,7 @@ class USpawnQuerySampler_Query : public USpawnQueryNode_Sampler
     GENERATED_BODY()
 
 public:
-    virtual bool IsActive(USpawnQueryContext& context) override;
+    virtual bool IsActive(const USpawnQueryContext& context) override;
     virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& context) override;
 
 public:

@@ -6,7 +6,7 @@ USpawnQueryNode_Composite::USpawnQueryNode_Composite(const FObjectInitializer& O
 {
 }
 
-bool USpawnQueryNode_Composite::IsActive(USpawnQueryContext& Context)
+bool USpawnQueryNode_Composite::IsActive(const USpawnQueryContext& Context)
 {
     for (FSpawnQueryCompositeChild Child : Children)
     {

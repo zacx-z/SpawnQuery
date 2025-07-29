@@ -33,9 +33,9 @@ class USpawnQuery : public UDataAsset
     bool bActiveByDefault;
 
 public:
-    bool IsActive(const USpawnQueryContext& Context) const;
-    void SetActiveState(bool bActiveState, USpawnQueryContext& Context) const;
-    TObjectPtr<USpawnEntryBase> QueryEntry(USpawnQueryContext& Context) const;
+    SPAWNQUERY_API bool IsActive(const USpawnQueryContext& Context) const;
+    SPAWNQUERY_API void SetActiveState(bool bActiveState, USpawnQueryContext& Context) const;
+    SPAWNQUERY_API TObjectPtr<USpawnEntryBase> QueryEntry(USpawnQueryContext& Context) const;
 
     // Blueprint version
     UFUNCTION(BlueprintCallable)

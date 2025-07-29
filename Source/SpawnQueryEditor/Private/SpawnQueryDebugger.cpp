@@ -1,25 +1,86 @@
 ﻿#include "SpawnQueryDebugger.h"
 
+#include "SpawnQueryGraphNode.h"
+#include "SpawnQueryGraphNode_Root.h"
 #include "SpawnQueryModule.h"
 #include "UnrealEdGlobals.h"
 #include "Editor/UnrealEdEngine.h"
+#include "SpawnQuery/SpawnQueryNode.h"
 
 FSpawnQueryDebugger::FSpawnQueryDebugger()
+    : SpawnQueryAsset(nullptr)
 {
+    FEditorDelegates::BeginPIE.AddRaw(this, &FSpawnQueryDebugger::OnBeginPIE);
+    FEditorDelegates::EndPIE.AddRaw(this, &FSpawnQueryDebugger::OnEndPIE);
+    FEditorDelegates::PausePIE.AddRaw(this, &FSpawnQueryDebugger::OnPausePIE);
 }
 
 FSpawnQueryDebugger::~FSpawnQueryDebugger()
 {
+    FEditorDelegates::BeginPIE.RemoveAll(this);
+    FEditorDelegates::EndPIE.RemoveAll(this);
+    FEditorDelegates::PausePIE.RemoveAll(this);
 }
 
 void FSpawnQueryDebugger::Tick(float DeltaTime)
 {
+    if (IsPlaySessionPaused())
+    {
+        USpawnQueryContext* ContextPtr = CurrentDebugContext.Get();
+        if (ContextPtr)
+        {
+            UpdateAssetFlags(*ContextPtr, RootNode.Get());
+        }
+    }
 }
 
 void FSpawnQueryDebugger::Setup(USpawnQuery* InQueryAsset, TSharedRef<class FSpawnQueryEditor> InEditorOwner)
 {
+    check(InQueryAsset)
+
+    SpawnQueryAsset = InQueryAsset;
+
     FSpawnQueryModule& SpawnQueryModule = FModuleManager::LoadModuleChecked<FSpawnQueryModule>("SpawnQuery");
     CurrentDebugContext = SpawnQueryModule.GetDefaultContext();
+
+    CacheRootNode();
+
+    if (IsPIESimulating())
+    {
+        OnBeginPIE(GEditor->bIsSimulatingInEditor);
+
+        Refresh();
+    }
+}
+
+void FSpawnQueryDebugger::Refresh()
+{
+    CacheRootNode();
+
+    if (IsPIESimulating())
+    {
+        if (USpawnQueryContext* ContextPtr = CurrentDebugContext.Get())
+        {
+            UpdateAssetFlags(*ContextPtr, RootNode.Get());
+        }
+    }
+}
+
+void FSpawnQueryDebugger::OnBeginPIE(const bool IsSimulating)
+{
+    if (USpawnQueryContext* ContextPtr = CurrentDebugContext.Get())
+    {
+        UpdateAssetFlags(*ContextPtr, RootNode.Get());
+    }
+}
+
+void FSpawnQueryDebugger::OnEndPIE(const bool IsSimulating)
+{
+    Refresh();
+}
+
+void FSpawnQueryDebugger::OnPausePIE(const bool IsSimulating)
+{
 }
 
 bool FSpawnQueryDebugger::IsPlaySessionPaused()
@@ -30,6 +91,11 @@ bool FSpawnQueryDebugger::IsPlaySessionPaused()
 bool FSpawnQueryDebugger::IsPlaySessionRunning()
 {
     return !AreAllGameWorldPaused();
+}
+
+bool FSpawnQueryDebugger::IsPIESimulating()
+{
+    return GEditor->bIsSimulatingInEditor || GEditor->PlayWorld;
 }
 
 void FSpawnQueryDebugger::ForEachGameWorld(const TFunction<void(UWorld*)>& Func)
@@ -52,4 +118,53 @@ bool FSpawnQueryDebugger::AreAllGameWorldPaused()
         bPaused = bPaused && World->bDebugPauseExecution; 
     });
     return bPaused;
+}
+
+void FSpawnQueryDebugger::CacheRootNode()
+{
+    if (RootNode.IsValid()) return;
+
+    if(SpawnQueryAsset == nullptr || SpawnQueryAsset->EdGraph == nullptr)
+    {
+        return;
+    }
+
+    for (const auto& Node : SpawnQueryAsset->EdGraph->Nodes)
+    {
+        RootNode = Cast<USpawnQueryGraphNode_Root>(Node);
+        if (RootNode.IsValid())
+        {
+            break;
+        }
+    }
+}
+
+void FSpawnQueryDebugger::UpdateAssetFlags(const USpawnQueryContext& Context, USpawnQueryGraphNode* Node)
+{
+    if (Node == nullptr) return;
+
+    if (USpawnQueryNode* NodeInstance = Cast<USpawnQueryNode>(Node->NodeInstance))
+    {
+        Node->bDebuggerActiveState = NodeInstance->IsActive(Context);
+    }
+    else if (Node->IsA(USpawnQueryGraphNode_Root::StaticClass()) && SpawnQueryAsset != nullptr)
+    {
+        Node->bDebuggerActiveState = SpawnQueryAsset->IsActive(Context);
+    }
+
+    for (UEdGraphPin* Pin : Node->Pins)
+    {
+        if (Pin->Direction != EGPD_Output)
+        {
+            continue;
+        }
+
+        for (UEdGraphPin* LinkedPin : Pin->LinkedTo)
+        {
+            if (USpawnQueryGraphNode* LinkedNode = Cast<USpawnQueryGraphNode>(LinkedPin->GetOwningNode()))
+            {
+                UpdateAssetFlags(Context, LinkedNode);
+            }
+        }
+    }
 }

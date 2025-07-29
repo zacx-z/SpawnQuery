@@ -20,7 +20,7 @@ public:
     //~ End UObject Interface
 #endif
     //~ Begin USpawnQueryNode Interface
-    virtual bool IsActive(USpawnQueryContext& context) override;
+    virtual bool IsActive(const USpawnQueryContext& context) override;
     virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& context) override;
     //~ End USpawnQueryNode Interface
 

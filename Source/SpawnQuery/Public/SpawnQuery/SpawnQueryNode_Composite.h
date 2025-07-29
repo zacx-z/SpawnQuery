@@ -21,7 +21,7 @@ class USpawnQueryNode_Composite : public USpawnQueryNode
 {
     GENERATED_UCLASS_BODY()
 
-    virtual bool IsActive(USpawnQueryContext& Context) override;
+    virtual bool IsActive(const USpawnQueryContext& Context) override;
 
     /** child nodes */
     UPROPERTY()

@@ -13,13 +13,19 @@ public:
 
     void Construct(const FArguments& InArgs, USpawnQueryGraphNode* InNode);
 
-    // SGraphNode interface
+    //~ Begin SWidget interface
+    virtual void Tick( const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime ) override;
+    //~ End SWidget interface
+
+    //~ Begin SGraphNode interface
     virtual void UpdateGraphNode() override;
     virtual void CreatePinWidgets() override;
-    // End of SGraphNode interface
+    //~ End SGraphNode interface
 
+    //~ Begin SGraphNodeAI interface
     /** adds decorator widget inside current node */
     virtual void AddSubNode(TSharedPtr<SGraphNode> SubNodeWidget) override;
+    //~ End SGraphNodeAI interface
 
     EVisibility GetWeightMarkerVisibility() const;
     TOptional<float> GetWeightProgressBarPercent() const;
