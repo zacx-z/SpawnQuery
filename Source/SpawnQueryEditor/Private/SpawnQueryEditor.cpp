@@ -1,9 +1,11 @@
 #include "SpawnQueryEditor.h"
 #include "SpawnQuery.h"
+#include "SpawnQueryDebugger.h"
 #include "SpawnQueryGraph.h"
 #include "SpawnQueryEditorModule.h"
 #include "SpawnQueryEditorStyle.h"
 #include "SpawnQueryGraphNode_Root.h"
+#include "SSpawnQueryEditorSelectedDebugContextWidget.h"
 
 #define LOCTEXT_NAMESPACE "SpawnQueryEditor"
 
@@ -18,11 +20,13 @@ public:
     }
 
     TSharedPtr<FUICommandInfo> Settings;
+    TSharedPtr<FUICommandInfo> ContextTarget;
 
     /** Initialize commands */
     virtual void RegisterCommands() override
     {
         UI_COMMAND(Settings, "Settings", "Open SpawnQuery Settings", EUserInterfaceActionType::Button, FInputChord());
+        UI_COMMAND(ContextTarget, "Context", "Choose a SpawnQueryContext to view", EUserInterfaceActionType::Button, FInputChord());
     }
 };
 
@@ -83,6 +87,9 @@ void FSpawnQueryEditor::InitSpawnQueryEditor(const EToolkitMode::Type Mode, cons
     const bool bCreateDefaultToolbar = true;
     FAssetEditorToolkit::InitAssetEditor(Mode, InitToolkitHost, FSpawnQueryEditorModule::SpawnQueryEditorAppIdentifier, StandaloneDefaultLayout, bCreateDefaultStandaloneMenu, bCreateDefaultToolbar, Query);
 
+    Debugger = MakeShareable(new FSpawnQueryDebugger);
+    Debugger->Setup(Query, SharedThis(this));
+
     FSpawnQueryEditorModule& SpawnQueryEditorModule = FModuleManager::LoadModuleChecked<FSpawnQueryEditorModule>("SpawnQueryEditor");
 
     BindCommands();
@@ -120,6 +127,16 @@ FLinearColor FSpawnQueryEditor::GetWorldCentricTabColorScale() const
     return FLinearColor(0.0f, 0.0f, 0.2f, 0.5f);
 }
 
+TWeakObjectPtr<USpawnQueryContext> FSpawnQueryEditor::GetCurrentDebugContext()
+{
+    return Debugger->GetCurrentDebugContext();
+}
+
+void FSpawnQueryEditor::SetCurrentDebugContext(TWeakObjectPtr<USpawnQueryContext> InContext)
+{
+    Debugger->SetCurrentDebugContext(InContext);
+}
+
 void FSpawnQueryEditor::SaveAsset_Execute()
 {
     if (Query)
@@ -138,33 +155,32 @@ void FSpawnQueryEditor::BindCommands()
     FEnvQueryCommands::Register();
 
     ToolkitCommands->MapAction(FEnvQueryCommands::Get().Settings,
-        FExecuteAction::CreateSP(this, &FSpawnQueryEditor::OnToolbar_OpenSettings)
+        FExecuteAction::CreateRaw(this, &FSpawnQueryEditor::OnToolbar_OpenSettings)
         );
 }
 
 void FSpawnQueryEditor::ExtendToolbar()
 {
-    struct Local
-    {
-        static void FillToolbar(FToolBarBuilder& ToolbarBuilder)
-        {
-            ToolbarBuilder.BeginSection("Settings");
-            {
-                ToolbarBuilder.AddToolBarButton(FEnvQueryCommands::Get().Settings);
-            }
-            ToolbarBuilder.EndSection();
-        }
-    };
-
     TSharedPtr<FExtender> ToolbarExtender = MakeShareable(new FExtender);
     ToolbarExtender->AddToolBarExtension(
         "Asset",
         EExtensionHook::After,
         ToolkitCommands,
-        FToolBarExtensionDelegate::CreateStatic(&Local::FillToolbar)
+        FToolBarExtensionDelegate::CreateRaw(this, &FSpawnQueryEditor::FillToolbar)
         );
 
     AddToolbarExtender(ToolbarExtender);
+}
+
+void FSpawnQueryEditor::FillToolbar(FToolBarBuilder& ToolbarBuilder)
+{
+    ToolbarBuilder.BeginSection("Settings");
+    {
+        ToolbarBuilder.AddToolBarButton(FEnvQueryCommands::Get().Settings);
+        ToolbarBuilder.AddSeparator();
+        ToolbarBuilder.AddToolBarWidget(SNew(SSpawnQueryEditorSelectedDebugContextWidget, SharedThis(this)));
+    }
+    ToolbarBuilder.EndSection();
 }
 
 void FSpawnQueryEditor::OnToolbar_OpenSettings()

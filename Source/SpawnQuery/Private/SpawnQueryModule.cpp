@@ -9,8 +9,10 @@
 void FSpawnQueryModule::StartupModule()
 {
     // This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-    SpawnQueryContext = NewObject<USpawnQueryContext>();
+    SpawnQueryContext = NewObject<USpawnQueryContext>(GetTransientPackage(), TEXT("Default Spawn Query Context"));
     SpawnQueryContext->AddToRoot();
+
+    AllSpawnQueryContexts.Add(SpawnQueryContext);
 }
 
 void FSpawnQueryModule::ShutdownModule()

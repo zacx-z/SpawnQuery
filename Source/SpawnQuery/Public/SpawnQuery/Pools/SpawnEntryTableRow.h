@@ -35,11 +35,11 @@ class USpawnEntryRowHandle : public USpawnEntryBase
     GENERATED_BODY()
 
 public:
-    void InitializeData(FSpawnEntryTableRowBase* MyRow, FName MyRowName, TObjectPtr<UDataTable> MyPoolTable)
+    void InitializeData(FSpawnEntryTableRowBase* InRow, FName InRowName, TObjectPtr<UDataTable> InPoolTable)
     {
-        Row = MyRow;
-        RowName = MyRowName;
-        PoolTable = MyPoolTable;
+        Row = InRow;
+        RowName = InRowName;
+        PoolTable = InPoolTable;
     }
 
 private:

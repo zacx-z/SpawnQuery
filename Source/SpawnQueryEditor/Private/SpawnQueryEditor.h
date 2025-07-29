@@ -2,6 +2,7 @@
 
 #include "AIGraphEditor.h"
 #include "ISpawnQueryEditor.h"
+#include "SpawnQueryDebugger.h"
 
 class IDetailsView;
 class FSpawnTabArgs;
@@ -26,10 +27,14 @@ public:
     virtual FLinearColor GetWorldCentricTabColorScale() const override;
     //~ End IToolkit Interface
 
+    TWeakObjectPtr<USpawnQueryContext> GetCurrentDebugContext();
+    void SetCurrentDebugContext(TWeakObjectPtr<USpawnQueryContext> InContext);
+
 protected:
     virtual void SaveAsset_Execute() override;
     void BindCommands();
     void ExtendToolbar();
+    void FillToolbar(FToolBarBuilder& ToolbarBuilder);
 
     void OnToolbar_OpenSettings();
 
@@ -50,6 +55,7 @@ private:
 private:
     USpawnQuery* Query = nullptr;
     TSharedPtr<IDetailsView> DetailsView;
+    TSharedPtr<class FSpawnQueryDebugger> Debugger;
 
     static const FName QueryGraphTabId;
     static const FName PropertiesTabId;
