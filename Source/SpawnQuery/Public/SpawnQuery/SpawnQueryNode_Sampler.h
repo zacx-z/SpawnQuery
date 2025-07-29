@@ -12,5 +12,7 @@ class USpawnQueryNode_Sampler : public USpawnQueryNode
 {
     GENERATED_UCLASS_BODY()
 
-    SPAWNQUERY_API virtual void PostLoad() override;
+    //~ Begin USpawnQueryNode Interface
+    virtual FText GetDescriptionTitle() const override;
+    //~ End USpawnQueryNode Interface
 };

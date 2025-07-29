@@ -6,7 +6,7 @@ USpawnQueryNode_Sampler::USpawnQueryNode_Sampler(const FObjectInitializer& Objec
 {
 }
 
-void USpawnQueryNode_Sampler::PostLoad()
+FText USpawnQueryNode_Sampler::GetDescriptionTitle() const
 {
-    Super::PostLoad();
+    return FText::FromString(Super::GetDescriptionTitle().ToString() + " Sampler");
 }

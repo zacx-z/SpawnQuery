@@ -2,24 +2,6 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(SpawnQueryComposite_PrioritySelector)
 
-USpawnQueryComposite_PrioritySelector::USpawnQueryComposite_PrioritySelector(const FObjectInitializer& ObjectInitializer) :
-    Super(ObjectInitializer), bReverseDirection(false)
-{
-}
-
-bool USpawnQueryComposite_PrioritySelector::IsActive(USpawnQueryContext& context)
-{
-    for (auto Child : Children)
-    {
-        if (Child.ChildNode->IsActive(context))
-        {
-            return true;
-        }
-    }
-    
-    return false;
-}
-
 TObjectPtr<USpawnEntryBase> USpawnQueryComposite_PrioritySelector::Query(
     USpawnQueryContext& context)
 {

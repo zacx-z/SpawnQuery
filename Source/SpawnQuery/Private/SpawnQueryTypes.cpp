@@ -27,6 +27,15 @@ FText USpawnQueryTypes::GetShortTypeName(const UObject* Ob)
         TypeDesc.MidInline(ShortNameIdx + 1, MAX_int32, EAllowShrinking::No);
     }
 
+    for (int32 i = 1; i < TypeDesc.Len(); ++i)
+    {
+        if (FChar::IsUpper(TypeDesc[i]))
+        {
+            TypeDesc.InsertAt(i, TEXT(" "));
+            ++i;
+        }
+    }
+
     return FText::FromString(TypeDesc);
 }
 
