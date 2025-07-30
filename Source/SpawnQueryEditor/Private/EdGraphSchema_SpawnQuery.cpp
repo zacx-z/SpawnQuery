@@ -6,10 +6,14 @@
 #include "SpawnQueryGraphNode_Root.h"
 #include "SpawnQueryGraphNode_Composite.h"
 #include "SpawnQueryGraphNode_Sampler.h"
+#include "SpawnQueryGraphNode_Decorator.h"
 
 #include "SpawnQuery/SpawnQueryNode.h"
 #include "SpawnQuery/SpawnQueryNode_Sampler.h"
 #include "SpawnQuery/SpawnQueryNode_Composite.h"
+#include "SpawnQuery/SpawnQueryNode_Decorator.h"
+
+#include "SpawnQueryEditorTypes.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(EdGraphSchema_SpawnQuery)
 
@@ -32,13 +36,12 @@ void UEdGraphSchema_SpawnQuery::GetGraphContextActions(FGraphContextMenuBuilder&
 {
     USpawnQueryGraphNode* ParentGraphNode = ContextMenuBuilder.FromPin ? Cast<USpawnQueryGraphNode>(ContextMenuBuilder.FromPin->GetOuter()) : NULL;
 
-    FSpawnQueryEditorModule& EditorModule = FModuleManager::GetModuleChecked<FSpawnQueryEditorModule>(TEXT("SpawnQueryEditor"));
-    FGraphNodeClassHelper* ClassCache = EditorModule.GetClassCache().Get();
 
     // samplers
+    auto ClassCache = GetClassCache();
 
     TArray<FGraphNodeClassData> SamplerClasses;
-    ClassCache->GatherClasses(USpawnQueryNode_Sampler::StaticClass(), SamplerClasses);
+    ClassCache.GatherClasses(USpawnQueryNode_Sampler::StaticClass(), SamplerClasses);
 
     FCategorizedGraphActionListBuilder SamplersBuilder(TEXT("Samplers"));
     for (auto& NodeClass : SamplerClasses)
@@ -57,7 +60,7 @@ void UEdGraphSchema_SpawnQuery::GetGraphContextActions(FGraphContextMenuBuilder&
     // composites
     
     TArray<FGraphNodeClassData> CompositeClasses;
-    ClassCache->GatherClasses(USpawnQueryNode_Composite::StaticClass(), CompositeClasses);
+    ClassCache.GatherClasses(USpawnQueryNode_Composite::StaticClass(), CompositeClasses);
     
     FCategorizedGraphActionListBuilder CompositesBuilder(TEXT("Composites"));
     for (auto& NodeClass : CompositeClasses)
@@ -119,4 +122,24 @@ const FPinConnectionResponse UEdGraphSchema_SpawnQuery::CanCreateConnection(cons
     }
 
     return FPinConnectionResponse(CONNECT_RESPONSE_MAKE, TEXT(""));
+}
+
+void UEdGraphSchema_SpawnQuery::GetSubNodeClasses(int32 SubNodeFlags, TArray<FGraphNodeClassData>& ClassData,
+    UClass*& GraphNodeClass) const
+{
+    FGraphNodeClassHelper& ClassCache = GetClassCache();
+
+    if (SubNodeFlags == ESubNode::Decorator)
+    {
+        ClassCache.GatherClasses(USpawnQueryNode_Decorator::StaticClass(), ClassData);
+        GraphNodeClass = USpawnQueryGraphNode_Decorator::StaticClass();
+    }
+}
+
+FGraphNodeClassHelper& UEdGraphSchema_SpawnQuery::GetClassCache() const
+{
+    FSpawnQueryEditorModule& EditorModule = FModuleManager::GetModuleChecked<FSpawnQueryEditorModule>(TEXT("SpawnQueryEditor"));
+    FGraphNodeClassHelper* ClassCache = EditorModule.GetClassCache().Get();
+    check(ClassCache);
+    return *ClassCache;
 }

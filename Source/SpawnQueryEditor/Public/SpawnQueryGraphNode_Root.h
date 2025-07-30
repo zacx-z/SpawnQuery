@@ -3,7 +3,7 @@
 #include "SpawnQueryGraphNode.h"
 #include "SpawnQueryGraphNode_Root.generated.h"
 
-UCLASS()
+UCLASS(MinimalAPI)
 class USpawnQueryGraphNode_Root : public USpawnQueryGraphNode
 {
     GENERATED_UCLASS_BODY()
@@ -17,7 +17,7 @@ class USpawnQueryGraphNode_Root : public USpawnQueryGraphNode
     void LogDebugMessage(const FString& Message);
     void LogDebugError(const FString& Message);
 
-    virtual void AllocateDefaultPins() override;
-    virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
-    virtual bool HasErrors() const override { return false; }
+    SPAWNQUERYEDITOR_API virtual void AllocateDefaultPins() override;
+    SPAWNQUERYEDITOR_API virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
+    SPAWNQUERYEDITOR_API virtual bool HasErrors() const override { return false; }
 };

@@ -5,6 +5,7 @@
 USpawnQueryGraphNode_Root::USpawnQueryGraphNode_Root(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
     bIsReadOnly = true;
+    bSupportDecorators = false;
 }
 
 void USpawnQueryGraphNode_Root::AllocateDefaultPins()

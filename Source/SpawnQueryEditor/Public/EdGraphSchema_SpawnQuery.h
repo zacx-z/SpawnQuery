@@ -17,5 +17,8 @@ class UEdGraphSchema_SpawnQuery : public UAIGraphSchema
     virtual void CreateDefaultNodesForGraph(UEdGraph& Graph) const override;
     virtual void GetGraphContextActions(FGraphContextMenuBuilder& ContextMenuBuilder) const override;
     virtual const FPinConnectionResponse CanCreateConnection(const UEdGraphPin* PinA, const UEdGraphPin* PinB) const override;
-    //~ End EdGraphSchema 
+    //~ End EdGraphSchema
+
+    virtual void GetSubNodeClasses(int32 SubNodeFlags, TArray<FGraphNodeClassData>& ClassData, UClass*& GraphNodeClass) const override;
+    FGraphNodeClassHelper& GetClassCache() const;
 };

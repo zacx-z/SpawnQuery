@@ -50,7 +50,7 @@ public class SpawnQueryEditor : ModuleRules
 				"KismetWidgets",
 				"KismetCompiler",
 				// ... add private dependencies that you statically link with here ...	
-				"SpawnQuery"
+				"SpawnQuery", "AIModule"
 			}
 			);
 		

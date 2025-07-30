@@ -11,16 +11,19 @@
 
 class UObject;
 
-UCLASS()
-class SPAWNQUERYEDITOR_API USpawnQueryGraphNode_Sampler : public USpawnQueryGraphNode
+UCLASS(MinimalAPI)
+class USpawnQueryGraphNode_Sampler : public USpawnQueryGraphNode
 {
     GENERATED_UCLASS_BODY()
-    virtual void AllocateDefaultPins() override;
-    virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
-    virtual FText GetDescription() const override;
-    virtual FText GetTooltipText() const override;
-    virtual bool RefreshNodeClass() override { return false; }
+
+    SPAWNQUERYEDITOR_API virtual void AllocateDefaultPins() override;
+    SPAWNQUERYEDITOR_API virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
+    SPAWNQUERYEDITOR_API virtual FText GetDescription() const override;
+    SPAWNQUERYEDITOR_API virtual FText GetTooltipText() const override;
+    SPAWNQUERYEDITOR_API virtual bool RefreshNodeClass() override { return false; }
 
     /** Gets a list of actions that can be done to this particular node */
-    virtual void GetNodeContextMenuActions(class UToolMenu* Menu, class UGraphNodeContextMenuContext* Context) const override;
+    SPAWNQUERYEDITOR_API virtual void GetNodeContextMenuActions(class UToolMenu* Menu, class UGraphNodeContextMenuContext* Context) const override;
+
+    SPAWNQUERYEDITOR_API virtual FLinearColor GetBackgroundColor() const override;
 };

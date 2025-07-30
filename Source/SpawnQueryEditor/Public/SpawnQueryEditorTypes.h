@@ -19,3 +19,10 @@ struct FCompareNodeXLocation
         return NodeA->NodePosX < NodeB->NodePosX;
     }
 };
+
+namespace ESubNode
+{
+    enum Type {
+        Decorator,
+    };
+}

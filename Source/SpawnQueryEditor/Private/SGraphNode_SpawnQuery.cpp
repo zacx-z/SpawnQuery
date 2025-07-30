@@ -63,7 +63,7 @@ void SGraphNode_SpawnQuery::AddSubNode(TSharedPtr<SGraphNode> SubNodeWidget)
 {
     SGraphNodeAI::AddSubNode(SubNodeWidget);
 
-    TestBox->AddSlot().AutoHeight()
+    DecoratorsBox->AddSlot().AutoHeight()
         [
             SubNodeWidget.ToSharedRef()
         ];
@@ -80,15 +80,12 @@ FSlateColor SGraphNode_SpawnQuery::GetBorderBackgroundColor() const
 FSlateColor SGraphNode_SpawnQuery::GetBackgroundColor() const
 {
     const USpawnQueryGraphNode* MyNode = Cast<USpawnQueryGraphNode>(GraphNode);
-    const UClass* MyClass = MyNode && MyNode->NodeInstance ? MyNode->NodeInstance->GetClass() : NULL;
 
     FLinearColor NodeColor = SpawnQueryColors::NodeBody::Default;
-    if (MyClass)
+
+    if (MyNode)
     {
-        if (MyClass->IsChildOf(USpawnQueryNode_Sampler::StaticClass()))
-        {
-            NodeColor = SpawnQueryColors::NodeBody::Sample;
-        }
+        NodeColor = MyNode->GetBackgroundColor();
     }
 
     if (FSpawnQueryDebugger::IsPIESimulating() && !MyNode->bDebuggerActiveState)
@@ -106,13 +103,13 @@ FSlateColor SGraphNode_SpawnQuery::GetBackgroundColor() const
 
 void SGraphNode_SpawnQuery::UpdateGraphNode()
 {
-    if (TestBox.IsValid())
+    if (DecoratorsBox.IsValid())
     {
-        TestBox->ClearChildren();
+        DecoratorsBox->ClearChildren();
     }
     else
     {
-        SAssignNew(TestBox, SVerticalBox);
+        SAssignNew(DecoratorsBox, SVerticalBox);
     }
 
     InputPins.Empty();
@@ -122,6 +119,25 @@ void SGraphNode_SpawnQuery::UpdateGraphNode()
     RightNodeBox.Reset();
     LeftNodeBox.Reset();
     SubNodes.Reset();
+
+    if (USpawnQueryGraphNode* SpawnQueryGraphNode = Cast<USpawnQueryGraphNode>(GraphNode))
+    {
+        for (TObjectPtr<USpawnQueryGraphNode> Decorator : SpawnQueryGraphNode->Decorators)
+        {
+            if (Decorator)
+            {
+                TSharedPtr<SGraphNode> NewNode = FNodeFactory::CreateNodeWidget(Decorator);
+                if (OwnerGraphPanelPtr.IsValid())
+                {
+                    NewNode->SetOwner(OwnerGraphPanelPtr.Pin().ToSharedRef());
+                    OwnerGraphPanelPtr.Pin()->AttachGraphEvents(NewNode);
+                }
+
+                AddSubNode(NewNode);
+                NewNode->UpdateGraphNode();
+            }
+        }
+    }
 
     const FMargin NodePadding = FMargin(2.0f);
 
@@ -256,7 +272,7 @@ void SGraphNode_SpawnQuery::UpdateGraphNode()
                                                 .AutoHeight()
                                                 .Padding(0, 0, 0, 0)
                                                 [
-                                                    TestBox.ToSharedRef()
+                                                    DecoratorsBox.ToSharedRef()
                                                 ]
                                         ]
                                 ]
@@ -271,19 +287,6 @@ void SGraphNode_SpawnQuery::UpdateGraphNode()
                                             SAssignNew(RightNodeBox, SVerticalBox)
                                         ]
                                 ]
-
-                            // Profiler overlay: option
-                            /* + SVerticalBox::Slot()
-                                .AutoHeight()
-                                [
-                                    SNew(SBorder)
-                                        .BorderBackgroundColor(SpawnQueryColors::Action::Profiler)
-                                        .Visibility(this, &SGraphNode_SpawnQuery::GetProfilerOptionVisibility)
-                                        [
-                                            SNew(STextBlock)
-                                                .Text(this, &SGraphNode_SpawnQuery::GetProfilerDescOption)
-                                        ]
-                                ]*/
                         ]
 
                     // Drag marker overlay
@@ -301,49 +304,6 @@ void SGraphNode_SpawnQuery::UpdateGraphNode()
                                         .HeightOverride(4)
                                 ]
                         ]
-
-                    // Profiler overlay: test
-                    /* + SOverlay::Slot()
-                        .HAlign(HAlign_Right)
-                        .VAlign(VAlign_Fill)
-                        .Padding(10, 5)
-                        [
-                            SNew(SBorder)
-                                .BorderBackgroundColor(SpawnQueryColors::Action::Profiler)
-                                .BorderImage(FAppStyle::GetBrush("Graph.StateNode.Body"))
-                                .Visibility(this, &SGraphNode_SpawnQuery::GetProfilerTestVisibility)
-                                [
-                                    SNew(SHorizontalBox)
-                                        + SHorizontalBox::Slot()
-                                        .AutoWidth()
-                                        [
-                                            SNew(SBorder)
-                                                .BorderImage(FAppStyle::GetBrush("Graph.StateNode.Body"))
-                                                .BorderBackgroundColor(this, &SGraphNode_SpawnQuery::GetProfilerTestSlateColor)
-                                                [
-                                                    SNew(SBox)
-                                                        .WidthOverride(10.0f)
-                                                ]
-                                        ]
-                                    + SHorizontalBox::Slot()
-                                        .Padding(2, 0, 0, 0)
-                                        [
-                                            SNew(SVerticalBox)
-                                                + SVerticalBox::Slot()
-                                                .VAlign(VAlign_Center)
-                                                [
-                                                    SNew(STextBlock)
-                                                        .Text(this, &SGraphNode_SpawnQuery::GetProfilerDescAverage)
-                                                ]
-                                                + SVerticalBox::Slot()
-                                                .VAlign(VAlign_Center)
-                                                [
-                                                    SNew(STextBlock)
-                                                        .Text(this, &SGraphNode_SpawnQuery::GetProfilerDescWorst)
-                                                ]
-                                        ]
-                                ]
-                        ]*/
                 ]
         ];
 

@@ -27,12 +27,8 @@ public:
     virtual void AddSubNode(TSharedPtr<SGraphNode> SubNodeWidget) override;
     //~ End SGraphNodeAI interface
 
-    EVisibility GetWeightMarkerVisibility() const;
-    TOptional<float> GetWeightProgressBarPercent() const;
-    FSlateColor GetWeightProgressBarColor() const;
-
 protected:
-    TSharedPtr<SVerticalBox> TestBox;
+    TSharedPtr<SVerticalBox> DecoratorsBox;
 
     FSlateColor GetBorderBackgroundColor() const;
     FSlateColor GetBackgroundColor() const;

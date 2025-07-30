@@ -1,11 +1,13 @@
 #include "SpawnQueryGraphNode_Sampler.h"
-
 #include "SpawnQueryColors.h"
+
 #include "SpawnQueryGraph.h"
 #include "SpawnQuery/SpawnQueryNode_Sampler.h"
 #include "HAL/PlatformMath.h"
 #include "Internationalization/Internationalization.h"
 #include "Templates/Casts.h"
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SpawnQueryGraphNode_Sampler)
 
 class UToolMenu;
 
@@ -42,4 +44,9 @@ FText USpawnQueryGraphNode_Sampler::GetTooltipText() const
 void USpawnQueryGraphNode_Sampler::GetNodeContextMenuActions(UToolMenu* Menu, UGraphNodeContextMenuContext* Context) const
 {
     Super::GetNodeContextMenuActions(Menu, Context);
+}
+
+FLinearColor USpawnQueryGraphNode_Sampler::GetBackgroundColor() const
+{
+    return SpawnQueryColors::NodeBody::Sampler;
 }
