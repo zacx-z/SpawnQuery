@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "BehaviorTree/ValueOrBBKey.h"
 #include "SpawnQuery/SpawnQueryNode_Decorator.h"
 #include "SpawnQueryDecorator_WeightOverride.generated.h"
 
@@ -14,8 +15,8 @@ public:
 public:
 
     virtual bool IsActive(const USpawnQueryContext& Context) override;
-    virtual double MutateWeight(double InWeight) override;
+    virtual double MutateWeight(double InWeight, const USpawnQueryContext& Context) override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    double Weight = 1.0;
+    FValueOrBBKey_Float Weight = 1.0f;
 };

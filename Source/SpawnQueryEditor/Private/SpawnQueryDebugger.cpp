@@ -10,14 +10,15 @@
 FSpawnQueryDebugger::FSpawnQueryDebugger()
     : SpawnQueryAsset(nullptr)
 {
-    FEditorDelegates::BeginPIE.AddRaw(this, &FSpawnQueryDebugger::OnBeginPIE);
+    // must be after PIE started so that World will be available to create the operating Actor
+    FEditorDelegates::PostPIEStarted.AddRaw(this, &FSpawnQueryDebugger::OnBeginPIE);
     FEditorDelegates::EndPIE.AddRaw(this, &FSpawnQueryDebugger::OnEndPIE);
     FEditorDelegates::PausePIE.AddRaw(this, &FSpawnQueryDebugger::OnPausePIE);
 }
 
 FSpawnQueryDebugger::~FSpawnQueryDebugger()
 {
-    FEditorDelegates::BeginPIE.RemoveAll(this);
+    FEditorDelegates::PostPIEStarted.RemoveAll(this);
     FEditorDelegates::EndPIE.RemoveAll(this);
     FEditorDelegates::PausePIE.RemoveAll(this);
 }

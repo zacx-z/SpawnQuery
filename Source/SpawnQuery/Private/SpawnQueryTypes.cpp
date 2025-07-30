@@ -3,6 +3,8 @@
 
 #define LOCTEXT_NAMESPACE "SpawnQueryGenerator"
 
+DEFINE_LOG_CATEGORY(LogSpawnQuery);
+
 //----------------------------------------------------------------------//
 // USpawnQueryTypes
 //----------------------------------------------------------------------//

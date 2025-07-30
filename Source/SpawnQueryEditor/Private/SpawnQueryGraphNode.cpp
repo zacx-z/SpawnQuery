@@ -45,6 +45,7 @@ void USpawnQueryGraphNode::GetNodeContextMenuActions(UToolMenu* Menu, UGraphNode
 
 void USpawnQueryGraphNode::OnSubNodeAdded(UAIGraphNode* SubNode)
 {
+    UE_LOG(LogTemp, Warning, TEXT("Add Subnode"));
     if (USpawnQueryGraphNode_Decorator* DecoratorNode = Cast<USpawnQueryGraphNode_Decorator>(SubNode))
     {
         Decorators.Add(DecoratorNode);
@@ -70,6 +71,7 @@ void USpawnQueryGraphNode::RemoveAllSubNodes()
 
 void USpawnQueryGraphNode::InsertSubNodeAt(UAIGraphNode* SubNode, int32 DropIndex)
 {
+    UE_LOG(LogTemp, Warning, TEXT("Insert Subnode"));
     USpawnQueryGraphNode_Decorator* TypedNode = Cast<USpawnQueryGraphNode_Decorator>(SubNode);
 
     if (TypedNode)

@@ -24,13 +24,13 @@ void USpawnQueryNode::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 {
 }
 
-double USpawnQueryNode::GetWeight()
+double USpawnQueryNode::GetWeight(const USpawnQueryContext& Context)
 {
     double Weight = 1.0;
 
     for (TObjectPtr<USpawnQueryNode_Decorator> Decorator : Decorators)
     {
-        Weight = Decorator->MutateWeight(Weight);
+        Weight = Decorator->MutateWeight(Weight, Context);
     }
 
     return Weight;

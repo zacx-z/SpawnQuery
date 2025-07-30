@@ -1,6 +1,8 @@
 ﻿#include "SpawnQuery/SpawnQueryContext.h"
 
 #include "SpawnQuery.h"
+#include "SpawnQueryTypes.h"
+#include "SpawnQuery/SpawnQueryContextActor.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(SpawnQueryContext)
 
@@ -62,4 +64,40 @@ FString USpawnQueryContext::GetCallStackInfo()
         CallStackInfo += TEXT("\n");
     }
     return CallStackInfo;
+}
+
+void USpawnQueryContext::CreateActor() const
+{
+    UWorld* World = GetWorld();
+
+    if (World == nullptr)
+    {
+        World = GEngine->GetCurrentPlayWorld();
+    }
+
+    if (!World)
+    {
+        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext: No valid UWorld found to get or create Blackboard Component."));
+    }
+
+    if (!((GIsEditor && World->IsPlayInEditor()) || (!GIsEditor)/* is playing */))
+    {
+        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext: Not in PIE or a cooked build. Cannot create Blackboard Component."));
+    }
+
+    
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+    SpawnParams.ObjectFlags |= RF_Transient; // Mark as transient to avoid saving with map if not intended
+
+    // Spawn the actor
+    ASpawnQueryContextActor* NewBlackboardHolderActor = World->SpawnActor<ASpawnQueryContextActor>(FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+
+    if (NewBlackboardHolderActor)
+    {
+        BlackboardPtr = NewBlackboardHolderActor->GetBlackboardComponent();
+    } else
+    {
+        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext: Failed to spawn SpawnQueryContextActor."));
+    }
 }

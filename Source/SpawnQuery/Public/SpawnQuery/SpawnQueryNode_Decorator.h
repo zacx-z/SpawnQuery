@@ -12,5 +12,5 @@ public:
     virtual bool IsActive(const USpawnQueryContext& Context) override { return true; }
     virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& Context) override { return nullptr; }
 
-    virtual double MutateWeight(double InWeight) { return InWeight; }
+    virtual double MutateWeight(double InWeight, const USpawnQueryContext& Context) { return InWeight; }
 };

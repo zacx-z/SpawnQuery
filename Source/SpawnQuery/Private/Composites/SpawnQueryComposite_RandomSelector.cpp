@@ -13,7 +13,7 @@ TObjectPtr<USpawnEntryBase> USpawnQueryComposite_RandomSelector::Query(USpawnQue
         TObjectPtr<USpawnQueryNode> ChildNode = Children[Index].ChildNode;
         if (ChildNode->IsSubtreeActive(Context))
         {
-            TotalWeights += ChildNode->GetWeight();
+            TotalWeights += ChildNode->GetWeight(Context);
         }
     }
 
@@ -29,7 +29,7 @@ TObjectPtr<USpawnEntryBase> USpawnQueryComposite_RandomSelector::Query(USpawnQue
         TObjectPtr<USpawnQueryNode> ChildNode = Children[Index].ChildNode;
         if (ChildNode->IsSubtreeActive(Context))
         {
-            WeightPosition -= ChildNode->GetWeight();
+            WeightPosition -= ChildNode->GetWeight(Context);
             if (WeightPosition <= FLT_EPSILON)
             {
                 return Children[Index].ChildNode->Query(Context);

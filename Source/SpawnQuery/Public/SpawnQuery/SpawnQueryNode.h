@@ -42,7 +42,7 @@ public:
     /**
      * The weight for being randomized by of parent nodes
      */
-    virtual double GetWeight();
+    virtual double GetWeight(const USpawnQueryContext& Context);
 
 
     /**

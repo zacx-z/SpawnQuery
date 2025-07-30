@@ -9,6 +9,8 @@
 
 #include "SpawnQueryTypes.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogSpawnQuery, Log, All);
+
 UCLASS(Abstract, MinimalAPI)
 class USpawnQueryTypes : public UObject
 {

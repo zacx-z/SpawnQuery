@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "UObject/ObjectMacros.h"
 #include "UObject/Object.h"
 #include "SpawnQueryContext.generated.h"
@@ -29,6 +30,15 @@ public:
     bool IsSpawnQueryActive(const USpawnQuery* SpawnQuery, bool bDefault) const;
     void SetSpawnQueryActiveState(const USpawnQuery* SpawnQuery, bool bActiveState);
 
+    const UBlackboardComponent& GetBlackboard() const
+    {
+        if (BlackboardPtr == nullptr)
+        {
+            CreateActor();
+        }
+        return *BlackboardPtr;
+    }
+
     void PushCall(USpawnQuery* Query);
     void PopCall(USpawnQuery* Query);
     bool HasQueryInCallStack(USpawnQuery* Query) const;
@@ -37,7 +47,15 @@ public:
 private:
     FRandomStream RandomStream;
 
+    UPROPERTY()
     TMap<const USpawnQuery*, bool> QueryActiveStateMap;
+
     // store the currently invoked SpawnQuery graphs during a query to avoid recursion
+    UPROPERTY()
     TArray<TWeakObjectPtr<USpawnQuery>> QueryCallStack;
+
+    UPROPERTY()
+    mutable TObjectPtr<UBlackboardComponent> BlackboardPtr;
+
+    void CreateActor() const;
 };
