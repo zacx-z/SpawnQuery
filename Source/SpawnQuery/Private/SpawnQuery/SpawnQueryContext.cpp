@@ -72,17 +72,17 @@ void USpawnQueryContext::CreateActor() const
 
     if (World == nullptr)
     {
-        World = GEngine->GetCurrentPlayWorld();
+        World = GetRelevantWorld();
     }
 
     if (!World)
     {
-        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext: No valid UWorld found to get or create Blackboard Component."));
+        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext %s: No valid UWorld found to get or create Blackboard Component."), *GetName());
     }
 
     if (!((GIsEditor && World->IsPlayInEditor()) || (!GIsEditor)/* is playing */))
     {
-        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext: Not in PIE or a cooked build. Cannot create Blackboard Component."));
+        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext %s: Not in PIE or a cooked build. Cannot create Blackboard Component."), *GetName());
     }
 
     
@@ -95,9 +95,34 @@ void USpawnQueryContext::CreateActor() const
 
     if (NewBlackboardHolderActor)
     {
+        NewBlackboardHolderActor->SetActorLabel(GetName() + "_Actor");
         BlackboardPtr = NewBlackboardHolderActor->GetBlackboardComponent();
     } else
     {
-        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext: Failed to spawn SpawnQueryContextActor."));
+        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext %s: Failed to spawn SpawnQueryContextActor."), *GetName());
     }
+}
+
+UWorld* USpawnQueryContext::GetRelevantWorld() const
+{
+    UWorld* BestWorld = nullptr;
+
+    for (auto WorldContext : GEngine->GetWorldContexts())
+    {
+        // If it's a game world, try and set BestWorld. If World() is null, this won't do anything
+        if (WorldContext.WorldType == EWorldType::Game)
+        {
+            return WorldContext.World();
+        }
+#if WITH_EDITOR
+        // This is a PIE world, PIE instance is set, and it matches this world
+        else if (WorldContext.WorldType == EWorldType::PIE)
+        {
+            // We don't examine UE::GetPlayInEditorID() as this might called too early when the ID is not yet initialized
+            BestWorld = WorldContext.World();
+        }
+#endif
+    }
+
+    return BestWorld;
 }

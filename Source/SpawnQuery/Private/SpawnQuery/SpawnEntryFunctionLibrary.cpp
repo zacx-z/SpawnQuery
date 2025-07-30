@@ -1,6 +1,26 @@
 ﻿#include "SpawnQuery/SpawnEntryFunctionLibrary.h"
 
+#include "SpawnQueryModule.h"
 #include "Blueprint/BlueprintExceptionInfo.h"
+
+TWeakObjectPtr<USpawnQueryContext> USpawnEntryFunctionLibrary::CachedGlobalContext;
+
+USpawnQueryContext* USpawnEntryFunctionLibrary::ConstructSpawnQueryContext(const FName Name, UObject* Outer)
+{
+    FSpawnQueryModule& SpawnQueryEditorModule = FModuleManager::LoadModuleChecked<FSpawnQueryModule>("SpawnQuery");
+    return SpawnQueryEditorModule.ConstructContext(Name, Outer);
+}
+
+USpawnQueryContext* USpawnEntryFunctionLibrary::GetDefaultSpawnQueryContext()
+{
+    if (CachedGlobalContext == nullptr)
+    {
+        FSpawnQueryModule& SpawnQueryEditorModule = FModuleManager::LoadModuleChecked<FSpawnQueryModule>("SpawnQuery");
+        CachedGlobalContext = SpawnQueryEditorModule.GetDefaultContext();
+    }
+
+    return CachedGlobalContext.Get();
+}
 
 bool USpawnEntryFunctionLibrary::GetSpawnEntryRow(USpawnEntryRowHandle* Entry, FSpawnEntryTableRowBase& OutRow)
 {

@@ -8,10 +8,10 @@ FText USpawnQueryDecorator_WeightOverride::GetDescriptionDetails() const
 
 bool USpawnQueryDecorator_WeightOverride::IsActive(const USpawnQueryContext& Context)
 {
-    return Weight.GetValue(Context.GetBlackboard()) > 0;
+    return Weight.GetValue(Context.GetBlackboardRef()) > 0;
 }
 
 double USpawnQueryDecorator_WeightOverride::MutateWeight(double InWeight, const USpawnQueryContext& Context)
 {
-    return Weight.GetValue(Context.GetBlackboard());
+    return Weight.GetValue(Context.GetBlackboardRef());
 }

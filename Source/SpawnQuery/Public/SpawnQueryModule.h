@@ -19,10 +19,9 @@ public:
         return SpawnQueryContext;
     }
 
-    SPAWNQUERY_API TArray<TWeakObjectPtr<USpawnQueryContext>>& GetSpawnQueryContexts()
-    {
-        return AllSpawnQueryContexts;
-    }
+    USpawnQueryContext* ConstructContext(FName Name, UObject* Outer);
+
+    SPAWNQUERY_API TArray<TWeakObjectPtr<USpawnQueryContext>>& GetSpawnQueryContexts();
 
 private:
     USpawnQueryContext* SpawnQueryContext = nullptr;

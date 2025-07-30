@@ -8,7 +8,7 @@
 
 class USpawnQuery;
 
-UCLASS(MinimalAPI)
+UCLASS(BlueprintType)
 class USpawnQueryContext : public UObject
 {
     GENERATED_BODY()
@@ -30,7 +30,17 @@ public:
     bool IsSpawnQueryActive(const USpawnQuery* SpawnQuery, bool bDefault) const;
     void SetSpawnQueryActiveState(const USpawnQuery* SpawnQuery, bool bActiveState);
 
-    const UBlackboardComponent& GetBlackboard() const
+    UFUNCTION(BlueprintPure, Category = "SpawnQuery")
+    UBlackboardComponent* GetBlackboard()
+    {
+        if (BlackboardPtr == nullptr)
+        {
+            CreateActor();
+        }
+        return BlackboardPtr;
+    }
+
+    const UBlackboardComponent& GetBlackboardRef() const
     {
         if (BlackboardPtr == nullptr)
         {
@@ -58,4 +68,5 @@ private:
     mutable TObjectPtr<UBlackboardComponent> BlackboardPtr;
 
     void CreateActor() const;
+    UWorld* GetRelevantWorld() const;
 };

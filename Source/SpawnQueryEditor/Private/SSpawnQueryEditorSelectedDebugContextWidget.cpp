@@ -22,6 +22,10 @@ void SSpawnQueryEditorSelectedDebugContextWidget::Construct(const FArguments& In
     TEXT("DebugSpawnQueryContext")))
         .OptionsSource(&SpawnQueryModule.GetSpawnQueryContexts())
         .InitiallySelectedItem(InEditor->GetCurrentDebugContext())
+        .OnComboBoxOpening_Lambda([&]()
+        {
+            SpawnQueryModule.GetSpawnQueryContexts(); // prune null pointers
+        })
         .OnGenerateWidget(this, &SSpawnQueryEditorSelectedDebugContextWidget::CreateDebugContextWidget)
         .OnSelectionChanged(this, &SSpawnQueryEditorSelectedDebugContextWidget::OnDebugContextChanged)
         .ContentPadding(FMargin(0.f, 4.f))
