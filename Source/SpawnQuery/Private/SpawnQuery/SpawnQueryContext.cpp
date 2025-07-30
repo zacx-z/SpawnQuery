@@ -36,6 +36,12 @@ void USpawnQueryContext::SetSpawnQueryActiveState(const USpawnQuery* SpawnQuery,
     QueryActiveStateMap.Add(SpawnQuery, bActiveState);
 }
 
+void USpawnQueryContext::SetSeed(int32 Seed)
+{
+    RandomSeed = Seed;
+    RandomStream = FRandomStream(Seed);
+}
+
 void USpawnQueryContext::PushCall(USpawnQuery* Query)
 {
     QueryCallStack.Add(Query);

@@ -30,7 +30,7 @@ public:
     bool IsSpawnQueryActive(const USpawnQuery* SpawnQuery, bool bDefault) const;
     void SetSpawnQueryActiveState(const USpawnQuery* SpawnQuery, bool bActiveState);
 
-    UFUNCTION(BlueprintPure, Category = "SpawnQuery")
+    UFUNCTION(BlueprintPure, Category="SpawnQuery")
     UBlackboardComponent* GetBlackboard()
     {
         if (BlackboardPtr == nullptr)
@@ -48,6 +48,9 @@ public:
         }
         return *BlackboardPtr;
     }
+
+    UFUNCTION(BlueprintCallable, Category="SpawnQuery")
+    void SetSeed(int32 Seed);
 
     void PushCall(USpawnQuery* Query);
     void PopCall(USpawnQuery* Query);
