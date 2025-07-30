@@ -34,7 +34,7 @@ public:
     /**
      * Implement this function to determine the node's active state
      */
-    virtual bool IsActive(const USpawnQueryContext& Context) PURE_VIRTUAL(USpawnQueryNode::IsActive, return false;);
+    virtual bool IsActive(const USpawnQueryContext& Context) PURE_VIRTUAL(USpawnQueryNode::IsActive, return false;)
     /**
      * Implement this function for the behavior upon queries
      */
@@ -52,6 +52,11 @@ public:
 
     UPROPERTY()
     TArray<TObjectPtr<USpawnQueryNode_Decorator>> Decorators;
+
+    /**
+     * Only for the Editor to refresh the information on it
+     */
+    virtual void Refresh() {}
 
 private:
     bool CheckDecoratorsActive(const USpawnQueryContext& Context);

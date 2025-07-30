@@ -17,6 +17,7 @@ void USpawnQuerySampler_Pool::PostLoad()
     if (PoolTable)
     {
         EntryNum = PoolTable->GetRowNames().Num();
+        PoolTable->OnDataTableChanged().AddUObject(this, &USpawnQuerySampler_Pool::OnPoolTableDataChanged);
     }
 }
 
@@ -45,6 +46,16 @@ void USpawnQuerySampler_Pool::PostEditChangeProperty(struct FPropertyChangedEven
             EntryNum = PoolTable->GetRowNames().Num();
         }
     }
+}
+
+void USpawnQuerySampler_Pool::BeginDestroy()
+{
+    if (PoolTable)
+    {
+        PoolTable->OnDataTableChanged().RemoveAll(this);
+    }
+
+    Super::BeginDestroy();
 }
 
 FText USpawnQuerySampler_Pool::GetDescriptionDetails() const
@@ -93,6 +104,16 @@ TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& c
     return handle;
 }
 
+void USpawnQuerySampler_Pool::Refresh()
+{
+    Super::Refresh();
+
+    if (PoolTable)
+    {
+        EntryNum = PoolTable->GetRowNames().Num();
+    }
+}
+
 void USpawnQuerySampler_Pool::BuildWeightMap()
 {
     TotalWeights = 0;
@@ -105,13 +126,7 @@ void USpawnQuerySampler_Pool::BuildWeightMap()
     {
         TotalWeights += reinterpret_cast<FSpawnEntryTableRowBase*>(Row.Value)->Weight;
         WeightMap.Add(TotalWeights);
-        EntryNum = 0;
-    }
-
-    if (!HasWeightMapBuilt)
-    {
-        // first time building a weight map
-        PoolTable->OnDataTableChanged().AddUObject(this, &USpawnQuerySampler_Pool::OnPoolTableDataChanged);
+        EntryNum++;
     }
 
     HasWeightMapBuilt = true;

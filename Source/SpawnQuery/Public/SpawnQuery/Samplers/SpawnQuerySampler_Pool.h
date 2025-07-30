@@ -20,6 +20,7 @@ public:
     virtual void PostLoad() override;
     virtual void PreEditChange(FProperty* PropertyAboutToChange) override;
     virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+    virtual void BeginDestroy() override;
     //~ End UObject Interface
 #endif
 
@@ -28,6 +29,8 @@ public:
 
     virtual bool IsActive(const USpawnQueryContext& context) override;
     virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& context) override;
+
+    virtual void Refresh() override;
     //~ End USpawnQueryNode Interface
 
 private:

@@ -34,7 +34,7 @@ void FSpawnQueryDebugger::Tick(float DeltaTime)
     }
 }
 
-void FSpawnQueryDebugger::Setup(USpawnQuery* InQueryAsset, TSharedRef<class FSpawnQueryEditor> InEditorOwner)
+void FSpawnQueryDebugger::Setup(USpawnQuery* InQueryAsset, TSharedRef<FSpawnQueryEditor> InEditorOwner)
 {
     check(InQueryAsset)
 
@@ -146,6 +146,7 @@ void FSpawnQueryDebugger::UpdateAssetFlags(const USpawnQueryContext& Context, US
     if (USpawnQueryNode* NodeInstance = Cast<USpawnQueryNode>(Node->NodeInstance))
     {
         Node->bDebuggerActiveState = NodeInstance->IsActive(Context);
+        NodeInstance->Refresh();
     }
     else if (Node->IsA(USpawnQueryGraphNode_Root::StaticClass()) && SpawnQueryAsset != nullptr)
     {
