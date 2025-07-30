@@ -14,22 +14,14 @@ public:
 
     FSpawnEntryTableRowBase()
         : Weight(1)
-        , MinAmount(0)
-        , MaxAmount(1)
     {
     }
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float Weight;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int32 MinAmount;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int32 MaxAmount;
 };
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, NotBlueprintable)
 class USpawnEntryRowHandle : public USpawnEntryBase
 {
     GENERATED_BODY()

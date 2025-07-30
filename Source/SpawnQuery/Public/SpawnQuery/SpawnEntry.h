@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "SpawnEntry.generated.h"
 
-UCLASS(Abstract, MinimalAPI)
+UCLASS(Abstract, Blueprintable, MinimalAPI)
 class USpawnEntryBase : public UObject
 {
     GENERATED_BODY()
