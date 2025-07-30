@@ -10,6 +10,16 @@ USpawnQuerySampler_Pool::USpawnQuerySampler_Pool(const FObjectInitializer& Objec
 
 #if WITH_EDITOR
 
+void USpawnQuerySampler_Pool::PostLoad()
+{
+    Super::PostLoad();
+
+    if (PoolTable)
+    {
+        EntryNum = PoolTable->GetRowNames().Num();
+    }
+}
+
 void USpawnQuerySampler_Pool::PreEditChange(FProperty* PropertyAboutToChange)
 {
     Super::PreEditChange(PropertyAboutToChange);
@@ -21,6 +31,31 @@ void USpawnQuerySampler_Pool::PreEditChange(FProperty* PropertyAboutToChange)
             PoolTable->OnDataTableChanged().RemoveAll(this);
         }
         HasWeightMapBuilt = false;
+    }
+}
+
+void USpawnQuerySampler_Pool::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+
+    if (PropertyChangedEvent.GetPropertyName() == GET_MEMBER_NAME_CHECKED(USpawnQuerySampler_Pool, PoolTable))
+    {
+        if (PoolTable)
+        {
+            EntryNum = PoolTable->GetRowNames().Num();
+        }
+    }
+}
+
+FText USpawnQuerySampler_Pool::GetDescriptionDetails() const
+{
+    if (PoolTable)
+    {
+        return FText::FromString(FString::Format(TEXT("Pool Table: {0}\nTotal Entries: {1}"), { PoolTable->GetName(), EntryNum }));
+    }
+    else
+    {
+        return FText::FromString("Pool table not set");
     }
 }
 
@@ -61,6 +96,7 @@ TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& c
 void USpawnQuerySampler_Pool::BuildWeightMap()
 {
     TotalWeights = 0;
+    EntryNum = 0;
     WeightMap.Reset();
 
     auto RowMap = PoolTable->GetRowMap();
@@ -69,6 +105,7 @@ void USpawnQuerySampler_Pool::BuildWeightMap()
     {
         TotalWeights += reinterpret_cast<FSpawnEntryTableRowBase*>(Row.Value)->Weight;
         WeightMap.Add(TotalWeights);
+        EntryNum = 0;
     }
 
     if (!HasWeightMapBuilt)

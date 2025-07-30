@@ -152,6 +152,14 @@ void FSpawnQueryDebugger::UpdateAssetFlags(const USpawnQueryContext& Context, US
         Node->bDebuggerActiveState = SpawnQueryAsset->IsActive(Context);
     }
 
+    for (UEdGraphNode* SubNode : Node->SubNodes)
+    {
+        if (USpawnQueryGraphNode* LinkedNode = Cast<USpawnQueryGraphNode>(SubNode))
+        {
+            UpdateAssetFlags(Context, LinkedNode);
+        }
+    }
+
     for (UEdGraphPin* Pin : Node->Pins)
     {
         if (Pin->Direction != EGPD_Output)

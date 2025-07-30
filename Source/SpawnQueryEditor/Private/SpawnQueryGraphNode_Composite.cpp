@@ -17,8 +17,7 @@ USpawnQueryGraphNode_Composite::USpawnQueryGraphNode_Composite(const FObjectInit
 
 FText USpawnQueryGraphNode_Composite::GetNodeTitle(ENodeTitleType::Type TitleType) const
 {
-    const USpawnQueryNode* MyNode = Cast<USpawnQueryNode>(NodeInstance);
-    if (MyNode != NULL)
+    if (const USpawnQueryNode* MyNode = Cast<USpawnQueryNode>(NodeInstance))
     {
         return MyNode->GetDescriptionTitle();
     }
@@ -27,6 +26,11 @@ FText USpawnQueryGraphNode_Composite::GetNodeTitle(ENodeTitleType::Type TitleTyp
 
 FText USpawnQueryGraphNode_Composite::GetDescription() const
 {
+    if (const USpawnQueryNode* MyNode = Cast<USpawnQueryNode>(NodeInstance))
+    {
+        return MyNode->GetDescriptionDetails();
+    }
+
     return Super::GetDescription();
 }
 

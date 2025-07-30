@@ -10,7 +10,7 @@ bool USpawnQueryNode_Composite::IsActive(const USpawnQueryContext& Context)
 {
     for (FSpawnQueryCompositeChild Child : Children)
     {
-        if (Child.ChildNode->IsActive(Context))
+        if (Child.ChildNode->IsSubtreeActive(Context))
         {
             return true;
         }

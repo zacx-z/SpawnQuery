@@ -9,6 +9,11 @@ class USpawnQueryDecorator_WeightOverride : public USpawnQueryNode_Decorator
 
 public:
 
+    SPAWNQUERY_API virtual FText GetDescriptionDetails() const override;
+
+public:
+
+    virtual bool IsActive(const USpawnQueryContext& Context) override;
     virtual double MutateWeight(double InWeight) override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -14,12 +14,18 @@ public:
     TObjectPtr<UDataTable> PoolTable;
 
 public:
+
 #if WITH_EDITOR
     //~ Begin UObject Interface
+    virtual void PostLoad() override;
     virtual void PreEditChange(FProperty* PropertyAboutToChange) override;
+    virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
     //~ End UObject Interface
 #endif
+
     //~ Begin USpawnQueryNode Interface
+    virtual FText GetDescriptionDetails() const override;
+
     virtual bool IsActive(const USpawnQueryContext& context) override;
     virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& context) override;
     //~ End USpawnQueryNode Interface
@@ -35,4 +41,5 @@ private:
     bool WeightMapDirty = false;
     TArray<float> WeightMap;
     double TotalWeights = 0;
+    int32 EntryNum;
 };

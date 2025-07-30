@@ -23,6 +23,16 @@ FText USpawnQueryGraphNode_Decorator::GetNodeTitle(ENodeTitleType::Type TitleTyp
     return Super::GetNodeTitle(TitleType);
 }
 
+FText USpawnQueryGraphNode_Decorator::GetDescription() const
+{
+    if (const USpawnQueryNode_Decorator* MyNode = Cast<USpawnQueryNode_Decorator>(NodeInstance))
+    {
+        return MyNode->GetDescriptionDetails();
+    }
+
+    return Super::GetDescription();
+}
+
 void USpawnQueryGraphNode_Decorator::AllocateDefaultPins()
 {
     // No pins for decorators

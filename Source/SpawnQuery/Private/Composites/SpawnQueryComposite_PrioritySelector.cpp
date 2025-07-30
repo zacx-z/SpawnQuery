@@ -15,7 +15,7 @@ TObjectPtr<USpawnEntryBase> USpawnQueryComposite_PrioritySelector::Query(
         for (int32 Index = 0; Index < ChildrenNum; ++Index)
         {
             FSpawnQueryCompositeChild Child = Children[Index];
-            if (Child.ChildNode->IsActive(context))
+            if (Child.ChildNode->IsSubtreeActive(context))
             {
                 ActiveChild = Child.ChildNode;
                 break;
@@ -26,7 +26,7 @@ TObjectPtr<USpawnEntryBase> USpawnQueryComposite_PrioritySelector::Query(
         for (int32 Index = ChildrenNum - 1; Index >= 0; --Index)
         {
             FSpawnQueryCompositeChild Child = Children[Index];
-            if (Child.ChildNode->IsActive(context))
+            if (Child.ChildNode->IsSubtreeActive(context))
             {
                 ActiveChild = Child.ChildNode;
                 break;

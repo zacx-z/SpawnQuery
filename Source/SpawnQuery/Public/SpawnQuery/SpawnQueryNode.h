@@ -32,7 +32,7 @@ class USpawnQueryNode : public UObject
 
 public:
     /**
-     * Whether or not to be considered as a valid path to generate a result entry
+     * Implement this function to determine the node's active state
      */
     virtual bool IsActive(const USpawnQueryContext& Context) PURE_VIRTUAL(USpawnQueryNode::IsActive, return false;);
     /**
@@ -44,6 +44,15 @@ public:
      */
     virtual double GetWeight();
 
+
+    /**
+     * Whether to be considered as a valid path to generate a result entry
+     */
+    bool IsSubtreeActive(const USpawnQueryContext& Context);
+
     UPROPERTY()
     TArray<TObjectPtr<USpawnQueryNode_Decorator>> Decorators;
+
+private:
+    bool CheckDecoratorsActive(const USpawnQueryContext& Context);
 };

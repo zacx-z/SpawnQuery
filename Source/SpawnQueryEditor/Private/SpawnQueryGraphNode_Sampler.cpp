@@ -23,8 +23,7 @@ void USpawnQueryGraphNode_Sampler::AllocateDefaultPins()
 
 FText USpawnQueryGraphNode_Sampler::GetNodeTitle(ENodeTitleType::Type TitleType) const
 {
-    const USpawnQueryNode* MyNode = Cast<USpawnQueryNode>(NodeInstance);
-    if (MyNode != NULL)
+    if (const USpawnQueryNode* MyNode = Cast<USpawnQueryNode>(NodeInstance))
     {
         return MyNode->GetDescriptionTitle();
     }
@@ -33,6 +32,11 @@ FText USpawnQueryGraphNode_Sampler::GetNodeTitle(ENodeTitleType::Type TitleType)
 
 FText USpawnQueryGraphNode_Sampler::GetDescription() const
 {
+    if (const USpawnQueryNode* MyNode = Cast<USpawnQueryNode>(NodeInstance))
+    {
+        return MyNode->GetDescriptionDetails();
+    }
+
     return Super::GetDescription();
 }
 

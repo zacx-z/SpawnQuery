@@ -36,4 +36,20 @@ double USpawnQueryNode::GetWeight()
     return Weight;
 }
 
+bool USpawnQueryNode::IsSubtreeActive(const USpawnQueryContext& Context)
+{
+    return IsActive(Context) && CheckDecoratorsActive(Context);
+}
+
+bool USpawnQueryNode::CheckDecoratorsActive(const USpawnQueryContext& Context)
+{
+    for (auto Decorator : Decorators)
+    {
+        if (!Decorator->IsActive(Context))
+            return false;
+    }
+
+    return true;
+}
+
 #endif //WITH_EDITOR

@@ -11,8 +11,13 @@ class USpawnQuerySampler_Query : public USpawnQueryNode_Sampler
     GENERATED_BODY()
 
 public:
+
+    //~ Begin USpawnQueryNode Interface
+    virtual FText GetDescriptionDetails() const override;
+
     virtual bool IsActive(const USpawnQueryContext& context) override;
     virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& context) override;
+    //~ End USpawnQueryNode Interface
 
 public:
 

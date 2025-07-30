@@ -3,6 +3,18 @@
 #include "SpawnQuery.h"
 #include "SpawnQuery/SpawnQueryContext.h"
 
+FText USpawnQuerySampler_Query::GetDescriptionDetails() const
+{
+    if (QueryGraph)
+    {
+        return FText::FromString(QueryGraph->GetName());
+    }
+    else
+    {
+        return FText::FromString(TEXT("Graph is not set"));
+    }
+}
+
 bool USpawnQuerySampler_Query::IsActive(const USpawnQueryContext& context)
 {
     return QueryGraph != nullptr && QueryGraph->IsActive(context);

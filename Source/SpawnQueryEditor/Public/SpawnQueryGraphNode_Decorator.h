@@ -9,6 +9,7 @@ class USpawnQueryGraphNode_Decorator : public USpawnQueryGraphNode
 
 public:
     SPAWNQUERYEDITOR_API virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
+    SPAWNQUERYEDITOR_API virtual FText GetDescription() const override;
     SPAWNQUERYEDITOR_API virtual void AllocateDefaultPins() override;
 
     SPAWNQUERYEDITOR_API virtual FLinearColor GetBackgroundColor() const override;
