@@ -12,5 +12,5 @@ public:
     virtual double MutateWeight(double InWeight) override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    double Weight;
+    double Weight = 1.0;
 };

@@ -16,7 +16,10 @@ void USpawnQuerySampler_Pool::PreEditChange(FProperty* PropertyAboutToChange)
 
     if (PropertyAboutToChange && PropertyAboutToChange->GetName() == GET_MEMBER_NAME_CHECKED(USpawnQuerySampler_Pool, PoolTable))
     {
-        PoolTable->OnDataTableChanged().RemoveAll(this);
+        if (PoolTable)
+        {
+            PoolTable->OnDataTableChanged().RemoveAll(this);
+        }
         HasWeightMapBuilt = false;
     }
 }
