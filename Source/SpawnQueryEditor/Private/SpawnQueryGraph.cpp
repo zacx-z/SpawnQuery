@@ -3,9 +3,11 @@
 #include "SpawnQueryEditorTypes.h"
 
 #include "SpawnQuery.h"
+#include "SpawnQueryGraphNode_Decorator.h"
 #include "SpawnQuery/SpawnQueryNode.h"
 #include "SpawnQueryGraphNode_Root.h"
 #include "SpawnQuery/SpawnQueryNode_Composite.h"
+#include "SpawnQuery/SpawnQueryNode_Decorator.h"
 #include "SpawnQuery/SpawnQueryNode_Sampler.h"
 
 USpawnQueryGraph::USpawnQueryGraph(const FObjectInitializer& ObjectInitializer)
@@ -75,6 +77,16 @@ namespace SpawnQueryGraphHelpers
         if (Cast<USpawnQuery>(RootNode->GetOuter()) == nullptr)
         {
             RootNode->Rename(nullptr, Asset);
+        }
+
+        RootNode->Decorators.Reset();
+
+        for (TObjectPtr<USpawnQueryGraphNode> Decorator : RootEdNode->Decorators)
+        {
+            if (auto NodeInstance = Cast<USpawnQueryNode_Decorator>(Decorator->NodeInstance))
+            {
+                RootNode->Decorators.Add(NodeInstance);
+            }
         }
 
         if (USpawnQueryNode_Composite* CompositeNode = Cast<USpawnQueryNode_Composite>(RootNode))

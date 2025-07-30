@@ -1,6 +1,7 @@
 #include "SpawnQuery/SpawnQueryNode.h"
 #include "UObject/UnrealType.h"
 #include "SpawnQueryTypes.h"
+#include "SpawnQuery/SpawnQueryNode_Decorator.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(SpawnQueryNode)
 
@@ -21,6 +22,18 @@ FText USpawnQueryNode::GetDescriptionDetails() const
 #if WITH_EDITOR
 void USpawnQueryNode::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
+}
+
+double USpawnQueryNode::GetWeight()
+{
+    double Weight = 1.0;
+
+    for (TObjectPtr<USpawnQueryNode_Decorator> Decorator : Decorators)
+    {
+        Weight = Decorator->MutateWeight(Weight);
+    }
+
+    return Weight;
 }
 
 #endif //WITH_EDITOR

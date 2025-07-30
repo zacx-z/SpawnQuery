@@ -6,6 +6,7 @@
 //#include "SpawnQuery/SpawnQueryTypes.h"
 #include "SpawnQueryNode.generated.h"
 
+class USpawnQueryNode_Decorator;
 class USpawnEntryBase;
 class USpawnQueryContext;
 struct FPropertyChangedEvent;
@@ -38,4 +39,11 @@ public:
      * Implement this function for the behavior upon queries
      */
     virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& Context) PURE_VIRTUAL(USpawnQueryNode::Query, return nullptr;);
+    /**
+     * The weight for being randomized by of parent nodes
+     */
+    virtual double GetWeight();
+
+    UPROPERTY()
+    TArray<TObjectPtr<USpawnQueryNode_Decorator>> Decorators;
 };

@@ -204,6 +204,12 @@ void SGraphNode_SpawnQuery::UpdateGraphNode()
                                             SNew(SVerticalBox)
                                                 + SVerticalBox::Slot()
                                                 .AutoHeight()
+                                                .Padding(0, 0, 0, 0)
+                                                [
+                                                    DecoratorsBox.ToSharedRef()
+                                                ]
+                                                + SVerticalBox::Slot()
+                                                .AutoHeight()
                                                 [
                                                     SNew(SBorder)
                                                         .BorderImage(FAppStyle::GetBrush("Graph.StateNode.Body"))
@@ -267,12 +273,6 @@ void SGraphNode_SpawnQuery::UpdateGraphNode()
                                                                         .Text(this, &SGraphNode_SpawnQuery::GetDescription)
                                                                 ]
                                                         ]
-                                                ]
-                                            + SVerticalBox::Slot()
-                                                .AutoHeight()
-                                                .Padding(0, 0, 0, 0)
-                                                [
-                                                    DecoratorsBox.ToSharedRef()
                                                 ]
                                         ]
                                 ]

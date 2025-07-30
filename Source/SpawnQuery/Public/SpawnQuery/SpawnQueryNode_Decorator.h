@@ -8,5 +8,6 @@ class USpawnQueryNode_Decorator : public USpawnQueryNode
     GENERATED_BODY()
 
 public:
-    
+
+    virtual double MutateWeight(double InWeight) { return InWeight; }
 };

@@ -10,9 +10,10 @@ TObjectPtr<USpawnEntryBase> USpawnQueryComposite_RandomSelector::Query(USpawnQue
 
     for (int32 Index = 0; Index < ChildrenNum; ++Index)
     {
-        if (Children[Index].ChildNode->IsActive(Context))
+        TObjectPtr<USpawnQueryNode> ChildNode = Children[Index].ChildNode;
+        if (ChildNode->IsActive(Context))
         {
-            TotalWeights += 1; // weight defaults to 1 for now
+            TotalWeights += ChildNode->GetWeight();
         }
     }
 
@@ -25,9 +26,10 @@ TObjectPtr<USpawnEntryBase> USpawnQueryComposite_RandomSelector::Query(USpawnQue
 
     for (int32 Index = 0; Index < ChildrenNum; ++Index)
     {
-        if (Children[Index].ChildNode->IsActive(Context))
+        TObjectPtr<USpawnQueryNode> ChildNode = Children[Index].ChildNode;
+        if (ChildNode->IsActive(Context))
         {
-            WeightPosition -= 1; // weight defaults to 1 for now
+            WeightPosition -= ChildNode->GetWeight();
             if (WeightPosition <= FLT_EPSILON)
             {
                 return Children[Index].ChildNode->Query(Context);

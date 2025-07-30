@@ -9,5 +9,8 @@ class USpawnQueryDecorator_WeightOverride : public USpawnQueryNode_Decorator
 
 public:
 
-    // TODO:
+    virtual double MutateWeight(double InWeight) override;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    double Weight;
 };
