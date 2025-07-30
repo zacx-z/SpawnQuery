@@ -1,14 +1,10 @@
 #include "SpawnQueryTypes.h"
 
-
 #define LOCTEXT_NAMESPACE "SpawnQueryGenerator"
 
 DEFINE_LOG_CATEGORY(LogSpawnQuery);
 
-//----------------------------------------------------------------------//
-// USpawnQueryTypes
-//----------------------------------------------------------------------//
-FText USpawnQueryTypes::GetShortTypeName(const UObject* Ob)
+FText SpawnQueryTypes::GetShortTypeName(const UObject* Ob)
 {
     if (Ob == nullptr)
     {

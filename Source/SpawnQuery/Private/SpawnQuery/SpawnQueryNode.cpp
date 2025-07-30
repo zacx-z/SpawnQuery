@@ -11,7 +11,7 @@ USpawnQueryNode::USpawnQueryNode(const FObjectInitializer& ObjectInitializer) : 
 
 FText USpawnQueryNode::GetDescriptionTitle() const
 {
-    return USpawnQueryTypes::GetShortTypeName(this);
+    return SpawnQueryTypes::GetShortTypeName(this);
 }
 
 FText USpawnQueryNode::GetDescriptionDetails() const

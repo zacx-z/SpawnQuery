@@ -7,16 +7,9 @@
 #include "Templates/SubclassOf.h"
 #include "Engine/EngineTypes.h"
 
-#include "SpawnQueryTypes.generated.h"
-
 DECLARE_LOG_CATEGORY_EXTERN(LogSpawnQuery, Log, All);
 
-UCLASS(Abstract, MinimalAPI)
-class USpawnQueryTypes : public UObject
+namespace SpawnQueryTypes
 {
-    GENERATED_BODY()
-
-public:
-
-    static SPAWNQUERY_API FText GetShortTypeName(const UObject* Ob);
-};
+    FText GetShortTypeName(const UObject* Ob);
+}
