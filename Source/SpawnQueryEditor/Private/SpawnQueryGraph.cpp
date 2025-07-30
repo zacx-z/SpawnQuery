@@ -67,7 +67,7 @@ void USpawnQueryGraph::UpdateAsset(int32 UpdateFlags)
 
 namespace SpawnQueryGraphHelpers
 {
-    void CreateSubtree(USpawnQuery* Asset, USpawnQueryNode* RootNode, const USpawnQueryGraphNode* RootEdNode, uint8 TreeDepth)
+    void CreateSubtree(USpawnQuery* Asset, USpawnQueryNode* RootNode, USpawnQueryGraphNode* RootEdNode, uint8 TreeDepth)
     {
         if (RootEdNode == nullptr || RootNode == nullptr)
         {
@@ -79,6 +79,7 @@ namespace SpawnQueryGraphHelpers
             RootNode->Rename(nullptr, Asset);
         }
 
+        RootEdNode->ParentNode = nullptr;
         RootNode->Decorators.Reset();
 
         for (TObjectPtr<USpawnQueryGraphNode> Decorator : RootEdNode->Decorators)
@@ -87,6 +88,8 @@ namespace SpawnQueryGraphHelpers
             {
                 RootNode->Decorators.Add(NodeInstance);
             }
+
+            Decorator->ParentNode = RootEdNode;
         }
 
         if (USpawnQueryNode_Composite* CompositeNode = Cast<USpawnQueryNode_Composite>(RootNode))
