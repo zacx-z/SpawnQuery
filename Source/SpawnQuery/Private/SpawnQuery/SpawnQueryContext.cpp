@@ -82,6 +82,17 @@ FString USpawnQueryContext::GetCallStackInfo()
     return CallStackInfo;
 }
 
+int32 USpawnQueryContext::GetWorldID() const
+{
+    UWorld* World = GetWorld();
+    if (World == nullptr)
+    {
+        World = GetBlackboardRef().GetWorld();
+    }
+
+    return World->GetUniqueID();
+}
+
 UObject* USpawnQueryContext::GetStateObjectInternal(UObject* Owner, UClass* StateObjectClass)
 {
     if (!Owner)

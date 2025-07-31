@@ -87,9 +87,18 @@ TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& C
     if (PoolTable == nullptr) return nullptr;
     if (!PoolTable->GetRowStruct()->IsChildOf(FSpawnEntryTableRowBase::StaticStruct()))
     {
-        UE_LOG(LogBlueprint, Warning, TEXT("Mismatched row struct type in USpawnQuerySampler_Pool::Query"));
+        UE_LOG(LogSpawnQuery, Warning, TEXT("Mismatched row struct type in USpawnQuerySampler_Pool::Query"));
         return nullptr;
     }
+
+#if WITH_EDITOR
+    int32 CurrentWorldID = Context.GetWorldID();
+    if (CachedWorldID != CurrentWorldID)
+    {
+        HasTableCacheBuilt = false;
+        CachedWorldID = CurrentWorldID;
+    }
+#endif
 
     if (!HasTableCacheBuilt)
     {
@@ -119,6 +128,8 @@ TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& C
     return handle;
 }
 
+#if WITH_EDITOR
+
 void USpawnQuerySampler_Pool::Refresh()
 {
     Super::Refresh();
@@ -128,6 +139,8 @@ void USpawnQuerySampler_Pool::Refresh()
         EntryNum = PoolTable->GetRowNames().Num();
     }
 }
+
+#endif
 
 void USpawnQuerySampler_Pool::BuildTableCache()
 {

@@ -42,7 +42,9 @@ public:
     virtual bool IsActive(const USpawnQueryContext& Context) override;
     virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& Context) override;
 
+#if WITH_EDITOR
     virtual void Refresh() override;
+#endif
     //~ End USpawnQueryNode Interface
 
 private:
@@ -61,4 +63,8 @@ private:
     TArray<float> WeightMap;
     double TotalWeights = 0;
     int32 EntryNum;
+
+#if WITH_EDITOR
+    int32 CachedWorldID;
+#endif
 };

@@ -26,10 +26,6 @@ class USpawnQueryNode : public UObject
      */
     virtual FORCEINLINE bool IsCurrentlyRunningAsync() const { return false; }
 
-#if WITH_EDITOR
-    SPAWNQUERY_API virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-#endif //WITH_EDITOR
-
 public:
     /**
      * Implement this function to determine the node's active state
@@ -38,7 +34,7 @@ public:
     /**
      * Implement this function for the behavior upon queries
      */
-    virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& Context) PURE_VIRTUAL(USpawnQueryNode::Query, return nullptr;);
+    virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& Context) PURE_VIRTUAL(USpawnQueryNode::Query, return nullptr;)
     /**
      * The weight for being randomized by of parent nodes
      */
@@ -53,10 +49,13 @@ public:
     UPROPERTY()
     TArray<TObjectPtr<USpawnQueryNode_Decorator>> Decorators;
 
+#if WITH_EDITOR
+
     /**
      * Only for the Editor to refresh the information on it
      */
     virtual void Refresh() {}
+#endif
 
 private:
     bool CheckDecoratorsActive(const USpawnQueryContext& Context);

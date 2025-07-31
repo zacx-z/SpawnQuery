@@ -19,11 +19,6 @@ FText USpawnQueryNode::GetDescriptionDetails() const
     return FText::GetEmpty();
 }
 
-#if WITH_EDITOR
-void USpawnQueryNode::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-}
-
 float USpawnQueryNode::GetWeight(const USpawnQueryContext& Context)
 {
     float Weight = 1.0f;
@@ -51,5 +46,3 @@ bool USpawnQueryNode::CheckDecoratorsActive(const USpawnQueryContext& Context)
 
     return true;
 }
-
-#endif //WITH_EDITOR

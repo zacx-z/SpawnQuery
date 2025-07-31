@@ -70,7 +70,7 @@ public:
     void PopCall(USpawnQuery* Query);
     bool HasQueryInCallStack(USpawnQuery* Query) const;
     FString GetCallStackInfo();
-
+    int32 GetWorldID() const;
 
 protected:
     UObject* GetStateObjectInternal(UObject* Owner, UClass* StateObjectClass);
