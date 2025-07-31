@@ -3,6 +3,7 @@
 #include "SpawnQueryTypes.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Misc/DefaultValueHelper.h"
+#include "SpawnQuery/RandomizationHelpers.h"
 #include "SpawnQuery/SpawnQueryContext.h"
 #include "SpawnQuery/Pools/SpawnEntryTableRow.h"
 
@@ -11,7 +12,6 @@
 USpawnQuerySampler_Pool::USpawnQuerySampler_Pool(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }
-
 
 void USpawnQuerySampler_Pool::PostLoad()
 {
@@ -110,17 +110,33 @@ TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& C
         WeightMapDirty = true;
     }
 
-    if (WeightMapDirty)
+    int32 PickedIndex;
+
+    if (RandomizationPolicy == Independent)
     {
-        BuildWeightCache(Context);
+        if (WeightMapDirty)
+        {
+            BuildWeightCache(Context);
+        }
+
+        const double WeightPosition = Context.GetRandomStream().FRandRange(0, TotalWeights);
+
+        PickedIndex = SearchEntryByWeightPosition(WeightPosition);
+    }
+    else
+    {
+        TArray<FRandomizationWeightState>& WeightBase = Context.GetStateObject<
+            USpawnQuerySampler_Pool_State>(this)->WeightBase;
+        PickedIndex = RandomizationHelpers::Randomize_ShuffledSequence(EntryCache, WeightBase, Context.GetRandomStream(), Context);
     }
 
-    const double WeightPosition = Context.GetRandomStream().FRandRange(0, TotalWeights);
-
-    int32 Index = SearchEntryByWeightPosition(WeightPosition);
+    if (PickedIndex == -1)
+    {
+        return nullptr;
+    }
 
     TArray<FName> Names = PoolTable->GetRowNames();
-    FName Name = Names[Index];
+    FName Name = Names[PickedIndex];
     FSpawnEntryTableRowBase* Row = reinterpret_cast<FSpawnEntryTableRowBase*>(PoolTable->FindRowUnchecked(Name));
 
     USpawnEntryRowHandle* handle = NewObject<USpawnEntryRowHandle>(this); // maybe pool the struct because this function is frequently called
@@ -152,7 +168,10 @@ void USpawnQuerySampler_Pool::BuildTableCache()
     for (auto Row : RowMap)
     {
         FSpawnEntryTableRowBase* RowValue = reinterpret_cast<FSpawnEntryTableRowBase*>(Row.Value);
+
         FSpawnerQueryPool_EntryCache Entry;
+        Entry.Row = RowValue;
+
         TArray<FString> InfluencerStrings;
 
         RowValue->Influencers.ParseIntoArray(InfluencerStrings, TEXT(","), true);
@@ -240,4 +259,22 @@ int32 USpawnQuerySampler_Pool::SearchEntryByWeightPosition(double WeightPosition
 void USpawnQuerySampler_Pool::OnPoolTableDataChanged()
 {
     WeightMapDirty = true;
+}
+
+bool FSpawnerQueryPool_EntryCache::IsActive(const USpawnQueryContext& Context)
+{
+    return true;
+}
+
+float FSpawnerQueryPool_EntryCache::GetWeight(USpawnQueryContext& Context)
+{
+    const UBlackboardComponent& Blackboard = Context.GetBlackboardRef();
+    float Weight = Row->Weight;
+
+    for (auto Influencer : Influencers)
+    {
+        Weight += Blackboard.GetValueAsFloat(Influencer.InfluencerName) * Influencer.Factor;
+    }
+
+    return Weight;
 }

@@ -1,19 +1,8 @@
 ﻿#pragma once
 #include "SpawnQueryTypes.h"
 #include "SpawnQuery/SpawnQueryNode_Composite.h"
+#include "SpawnQuery/RandomizationTypes.h"
 #include "SpawnQueryComposite_RandomSelector.generated.h"
-
-USTRUCT()
-struct FRandomizationWeightState
-{
-    GENERATED_BODY()
-
-    float Base;
-
-    // cache
-    float CachedWeight;
-    bool CachedActive;
-};
 
 UCLASS(MinimalAPI)
 class USpawnQueryComposite_RandomSelector : public USpawnQueryNode_Composite

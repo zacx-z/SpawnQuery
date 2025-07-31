@@ -1,8 +1,12 @@
 ﻿#pragma once
 #include "CoreMinimal.h"
+#include "SpawnQueryTypes.h"
 #include "UObject/ObjectMacros.h"
 #include "SpawnQuery/SpawnQueryNode_Sampler.h"
+#include "SpawnQuery/RandomizationTypes.h"
 #include "SpawnQuerySampler_Pool.generated.h"
+
+struct FSpawnEntryTableRowBase;
 
 struct FSpawnerQueryPool_InfluencerEntry
 {
@@ -13,8 +17,12 @@ struct FSpawnerQueryPool_InfluencerEntry
 struct FSpawnerQueryPool_EntryCache
 {
     TArray<FSpawnerQueryPool_InfluencerEntry> Influencers;
-};
+    FSpawnEntryTableRowBase* Row;
 
+    // for template algorithms
+    bool IsActive(const USpawnQueryContext& Context);
+    float GetWeight(USpawnQueryContext& Context);
+};
 
 UCLASS(MinimalAPI)
 class USpawnQuerySampler_Pool : public USpawnQueryNode_Sampler
@@ -24,6 +32,8 @@ class USpawnQuerySampler_Pool : public USpawnQueryNode_Sampler
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (RequiredAssetDataTags = "RowStructure=/Script/SpawnQuery.SpawnEntryTableRowBase"))
     TObjectPtr<UDataTable> PoolTable;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TEnumAsByte<ERandomizationPolicy> RandomizationPolicy;
 
 public:
 
@@ -67,4 +77,17 @@ private:
 #if WITH_EDITOR
     int32 CachedWorldID;
 #endif
+};
+
+UCLASS()
+class USpawnQuerySampler_Pool_State : public UObject
+{
+    GENERATED_BODY()
+
+public:
+
+    /**
+     * Primarily for ShuffledSequence randomization
+     */
+    TArray<FRandomizationWeightState> WeightBase;
 };
