@@ -72,6 +72,42 @@ FString USpawnQueryContext::GetCallStackInfo()
     return CallStackInfo;
 }
 
+UObject* USpawnQueryContext::GetStateObjectInternal(UObject* Owner, UClass* StateObjectClass)
+{
+    if (!Owner)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UContext::GetStateObjectInternal: Owner is null."));
+        return nullptr;
+    }
+
+    UObject* FoundObject = StateObjectMap.FindRef(Owner);
+
+    if (FoundObject)
+    {
+        // If an object is found, check if it's compatible with the expected class
+        if (FoundObject->IsA(StateObjectClass))
+        {
+            return FoundObject;
+        }
+        else
+        {
+            UE_LOG(LogSpawnQuery, Error, TEXT("UContext::GetStateObjectInternal: Found state object for Owner %s is of type %s, but %s was expected. Returning null."),
+                *Owner->GetName(), *FoundObject->GetClass()->GetName(), *StateObjectClass->GetName());
+            return nullptr;
+        }
+    }
+    else
+    {
+        // Object not found, create a new one
+        if (UObject* NewStateObject = NewObject<UObject>(this, StateObjectClass))
+        {
+            StateObjectMap.Add(Owner, NewStateObject);
+            return NewStateObject;
+        }
+    }
+    return nullptr;
+}
+
 void USpawnQueryContext::CreateActor() const
 {
     UWorld* World = GetWorld();

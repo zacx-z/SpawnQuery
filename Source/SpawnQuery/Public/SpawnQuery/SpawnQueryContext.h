@@ -52,10 +52,22 @@ public:
     UFUNCTION(BlueprintCallable, Category="SpawnQuery")
     void SetSeed(int32 Seed);
 
+    template<typename T>
+    T* GetStateObject(UObject* Owner)
+    {
+        static_assert(TIsDerivedFrom<T, UObject>::Value, "GetStorage can only be used with UObject-derived types.");
+
+        return Cast<T>(GetStateObjectInternal(Owner, T::StaticClass()));
+    }
+
+public:
     void PushCall(USpawnQuery* Query);
     void PopCall(USpawnQuery* Query);
     bool HasQueryInCallStack(USpawnQuery* Query) const;
     FString GetCallStackInfo();
+
+protected:
+    UObject* GetStateObjectInternal(UObject* Owner, UClass* StateObjectClass);
 
 private:
     FRandomStream RandomStream;
@@ -66,6 +78,9 @@ private:
     // store the currently invoked SpawnQuery graphs during a query to avoid recursion
     UPROPERTY()
     TArray<TWeakObjectPtr<USpawnQuery>> QueryCallStack;
+
+    UPROPERTY()
+    TMap<TObjectPtr<UObject>, TObjectPtr<UObject>> StateObjectMap;
 
     UPROPERTY()
     mutable TObjectPtr<UBlackboardComponent> BlackboardPtr;

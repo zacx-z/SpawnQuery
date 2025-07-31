@@ -11,7 +11,7 @@ bool USpawnQueryDecorator_WeightOverride::IsActive(const USpawnQueryContext& Con
     return Weight.GetValue(Context.GetBlackboardRef()) > 0;
 }
 
-double USpawnQueryDecorator_WeightOverride::MutateWeight(double InWeight, const USpawnQueryContext& Context)
+float USpawnQueryDecorator_WeightOverride::MutateWeight(float InWeight, const USpawnQueryContext& Context)
 {
     return Weight.GetValue(Context.GetBlackboardRef());
 }

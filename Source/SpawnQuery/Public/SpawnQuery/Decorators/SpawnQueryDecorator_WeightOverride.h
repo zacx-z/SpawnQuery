@@ -15,7 +15,7 @@ public:
 public:
 
     virtual bool IsActive(const USpawnQueryContext& Context) override;
-    virtual double MutateWeight(double InWeight, const USpawnQueryContext& Context) override;
+    virtual float MutateWeight(float InWeight, const USpawnQueryContext& Context) override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FValueOrBBKey_Float Weight = 1.0f;

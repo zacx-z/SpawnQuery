@@ -1,6 +1,8 @@
 #include "SpawnQueryTypes.h"
 
-#define LOCTEXT_NAMESPACE "SpawnQueryGenerator"
+#include UE_INLINE_GENERATED_CPP_BY_NAME(SpawnQueryTypes)
+
+#define LOCTEXT_NAMESPACE "SpawnQueryTypes"
 
 DEFINE_LOG_CATEGORY(LogSpawnQuery);
 
