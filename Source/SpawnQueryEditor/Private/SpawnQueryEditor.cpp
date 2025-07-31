@@ -176,9 +176,13 @@ void FSpawnQueryEditor::FillToolbar(FToolBarBuilder& ToolbarBuilder)
 {
     ToolbarBuilder.BeginSection("Settings");
     {
-        ToolbarBuilder.AddToolBarButton(FEnvQueryCommands::Get().Settings);
+        ToolbarBuilder.AddToolBarButton(FEnvQueryCommands::Get().Settings,
+            NAME_None,
+            TAttribute<FText>(),
+            TAttribute<FText>(),
+            FSlateIcon("EditorStyle", "FullBlueprintEditor.EditGlobalOptions"));
         ToolbarBuilder.AddSeparator();
-        ToolbarBuilder.AddToolBarWidget(SNew(SSpawnQueryEditorSelectedDebugContextWidget, SharedThis(this)));
+        ToolbarBuilder.AddWidget(SNew(SSpawnQueryEditorSelectedDebugContextWidget, SharedThis(this)));
     }
     ToolbarBuilder.EndSection();
 }

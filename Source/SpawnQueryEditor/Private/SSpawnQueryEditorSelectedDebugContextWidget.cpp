@@ -1,6 +1,7 @@
 ﻿#include "SSpawnQueryEditorSelectedDebugContextWidget.h"
 
 #include "IDocumentation.h"
+#include "SLevelOfDetailBranchNode.h"
 #include "SpawnQueryEditor.h"
 #include "SpawnQueryModule.h"
 #include "SpawnQuery/SpawnQueryContext.h"
@@ -14,7 +15,7 @@ void SSpawnQueryEditorSelectedDebugContextWidget::Construct(const FArguments& In
 
     FSpawnQueryModule& SpawnQueryModule = FModuleManager::LoadModuleChecked<FSpawnQueryModule>("SpawnQuery");
 
-    auto DebugContextComboBoxRef = SNew(SComboBox<TWeakObjectPtr<USpawnQueryContext>>)
+    DebugContextComboBox = SNew(SComboBox<TWeakObjectPtr<USpawnQueryContext>>)
         .ToolTip(IDocumentation::Get()->CreateToolTip(
             LOCTEXT("SpawnQueryDebugContextTooltip", "Select a context to debug"),
             nullptr,
@@ -34,15 +35,22 @@ void SSpawnQueryEditorSelectedDebugContextWidget::Construct(const FArguments& In
             .Text(this, &SSpawnQueryEditorSelectedDebugContextWidget::GetSelectedDebugContextTextLabel)
         ];
 
-
-    DebugContextComboBox = DebugContextComboBoxRef;
-
     ChildSlot
     [
-        DebugContextComboBoxRef
+        SNew(SLevelOfDetailBranchNode)
+        .UseLowDetailSlot(FMultiBoxSettings::UseSmallToolBarIcons)
+        .OnGetActiveDetailSlotContent_Lambda([&](bool bChangedToHighDetail)
+        {
+            return SNew(SHorizontalBox)
+            + SHorizontalBox::Slot()
+            .VAlign(VAlign_Bottom)
+            .Padding(4.0f, 0.0f)
+            .AutoWidth()
+            [
+                DebugContextComboBox.ToSharedRef()
+            ];
+        })
     ];
-
-    DebugContextComboBoxRef->RefreshOptions();
 }
 
 void SSpawnQueryEditorSelectedDebugContextWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime,
