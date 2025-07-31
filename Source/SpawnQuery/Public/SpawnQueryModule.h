@@ -5,6 +5,7 @@
 #include "Modules/ModuleManager.h"
 #include "SpawnQuery/SpawnQueryContext.h"
 
+class IBlackboardAssetProvider;
 class USpawnQueryContext;
 
 class FSpawnQueryModule : public IModuleInterface
@@ -19,7 +20,7 @@ public:
         return SpawnQueryContext;
     }
 
-    USpawnQueryContext* ConstructContext(FName Name, UObject* Outer);
+    USpawnQueryContext* ConstructContext(FName Name, UObject* Outer, UBlackboardData* BlackboardAsset = nullptr);
 
     SPAWNQUERY_API TArray<TWeakObjectPtr<USpawnQueryContext>>& GetSpawnQueryContexts();
 

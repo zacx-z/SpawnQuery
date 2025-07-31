@@ -2,6 +2,7 @@
 
 #include "SpawnQueryModule.h"
 
+#include "BehaviorTree/BlackboardAssetProvider.h"
 #include "SpawnQuery/SpawnQueryContext.h"
 
 #define LOCTEXT_NAMESPACE "FSpawnQuerySystemModule"
@@ -21,9 +22,15 @@ void FSpawnQueryModule::ShutdownModule()
     // we call this function before unloading the module.
 }
 
-USpawnQueryContext* FSpawnQueryModule::ConstructContext(FName Name, UObject* Outer)
+USpawnQueryContext* FSpawnQueryModule::ConstructContext(FName Name, UObject* Outer, UBlackboardData* BlackboardAsset)
 {
     USpawnQueryContext* Context = NewObject<USpawnQueryContext>(Outer, Name);
+
+    if (BlackboardAsset)
+    {
+        Context->SetBlackboardAsset(BlackboardAsset);
+    }
+
     AllSpawnQueryContexts.Add(Context);
     return Context;
 }

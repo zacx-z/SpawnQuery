@@ -2,6 +2,7 @@
 #include "SpawnQuery/Pools/SpawnEntryTableRow.h"
 #include "SpawnEntryFunctionLibrary.generated.h"
 
+class UBlackboardData;
 class USpawnQueryContext;
 
 UCLASS(MinimalAPI)
@@ -11,7 +12,7 @@ class USpawnEntryFunctionLibrary : public UBlueprintFunctionLibrary
 
 public:
     UFUNCTION(BlueprintCallable, Category = "SpawnQuery", meta=(WorldContext = "Outer"))
-    static SPAWNQUERY_API USpawnQueryContext* ConstructSpawnQueryContext(FName Name, UObject* Outer);
+    static SPAWNQUERY_API USpawnQueryContext* ConstructSpawnQueryContext(const FName Name, UObject* Outer, UBlackboardData* BlackboardAsset);
     UFUNCTION(BlueprintPure, Category = "SpawnQuery")
     static SPAWNQUERY_API USpawnQueryContext* GetDefaultSpawnQueryContext();
     /**

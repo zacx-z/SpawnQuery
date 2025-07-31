@@ -19,6 +19,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float Weight;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FString Influencers;
 };
 
 UCLASS(BlueprintType, NotBlueprintable)

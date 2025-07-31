@@ -1,4 +1,8 @@
 ﻿#include "SpawnQuery/Samplers/SpawnQuerySampler_Pool.h"
+
+#include "SpawnQueryTypes.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Misc/DefaultValueHelper.h"
 #include "SpawnQuery/SpawnQueryContext.h"
 #include "SpawnQuery/Pools/SpawnEntryTableRow.h"
 
@@ -8,7 +12,6 @@ USpawnQuerySampler_Pool::USpawnQuerySampler_Pool(const FObjectInitializer& Objec
 {
 }
 
-#if WITH_EDITOR
 
 void USpawnQuerySampler_Pool::PostLoad()
 {
@@ -21,6 +24,18 @@ void USpawnQuerySampler_Pool::PostLoad()
     }
 }
 
+void USpawnQuerySampler_Pool::BeginDestroy()
+{
+    if (PoolTable)
+    {
+        PoolTable->OnDataTableChanged().RemoveAll(this);
+    }
+
+    Super::BeginDestroy();
+}
+
+#if WITH_EDITOR
+
 void USpawnQuerySampler_Pool::PreEditChange(FProperty* PropertyAboutToChange)
 {
     Super::PreEditChange(PropertyAboutToChange);
@@ -31,7 +46,7 @@ void USpawnQuerySampler_Pool::PreEditChange(FProperty* PropertyAboutToChange)
         {
             PoolTable->OnDataTableChanged().RemoveAll(this);
         }
-        HasWeightMapBuilt = false;
+        HasTableCacheBuilt = false;
     }
 }
 
@@ -48,15 +63,7 @@ void USpawnQuerySampler_Pool::PostEditChangeProperty(struct FPropertyChangedEven
     }
 }
 
-void USpawnQuerySampler_Pool::BeginDestroy()
-{
-    if (PoolTable)
-    {
-        PoolTable->OnDataTableChanged().RemoveAll(this);
-    }
-
-    Super::BeginDestroy();
-}
+#endif
 
 FText USpawnQuerySampler_Pool::GetDescriptionDetails() const
 {
@@ -70,14 +77,12 @@ FText USpawnQuerySampler_Pool::GetDescriptionDetails() const
     }
 }
 
-#endif
-
-bool USpawnQuerySampler_Pool::IsActive(const USpawnQueryContext& context)
+bool USpawnQuerySampler_Pool::IsActive(const USpawnQueryContext& Context)
 {
     return PoolTable != nullptr;
 }
 
-TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& context)
+TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& Context)
 {
     if (PoolTable == nullptr) return nullptr;
     if (!PoolTable->GetRowStruct()->IsChildOf(FSpawnEntryTableRowBase::StaticStruct()))
@@ -86,12 +91,22 @@ TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& c
         return nullptr;
     }
 
-    if (!HasWeightMapBuilt || WeightMapDirty)
+    if (!HasTableCacheBuilt)
     {
-        BuildWeightMap();
+        BuildTableCache();
     }
 
-    const double WeightPosition = context.GetRandomStream().FRandRange(0, TotalWeights);
+    if (UsingInfluencers)
+    {
+        WeightMapDirty = true;
+    }
+
+    if (WeightMapDirty)
+    {
+        BuildWeightCache(Context);
+    }
+
+    const double WeightPosition = Context.GetRandomStream().FRandRange(0, TotalWeights);
 
     int32 Index = SearchEntryByWeightPosition(WeightPosition);
 
@@ -114,22 +129,77 @@ void USpawnQuerySampler_Pool::Refresh()
     }
 }
 
-void USpawnQuerySampler_Pool::BuildWeightMap()
+void USpawnQuerySampler_Pool::BuildTableCache()
 {
-    TotalWeights = 0;
-    EntryNum = 0;
-    WeightMap.Reset();
+    if (HasTableCacheBuilt) return;
 
+    EntryCache.Reset();
     auto RowMap = PoolTable->GetRowMap();
 
     for (auto Row : RowMap)
     {
-        TotalWeights += reinterpret_cast<FSpawnEntryTableRowBase*>(Row.Value)->Weight;
+        FSpawnEntryTableRowBase* RowValue = reinterpret_cast<FSpawnEntryTableRowBase*>(Row.Value);
+        FSpawnerQueryPool_EntryCache Entry;
+        TArray<FString> InfluencerStrings;
+
+        RowValue->Influencers.ParseIntoArray(InfluencerStrings, TEXT(","), true);
+
+        for (const FString& InfluencerString : InfluencerStrings)
+        {
+            FString InfluencerName;
+            FString FactorString;
+            if (float Factor = 0;
+                InfluencerString.Split(TEXT(":"), &InfluencerName, &FactorString)
+                && !InfluencerName.IsEmpty()
+                && FDefaultValueHelper::ParseFloat(FactorString, Factor))
+            {
+                Entry.Influencers.Add(FSpawnerQueryPool_InfluencerEntry{ FName(*InfluencerName), Factor });
+            }
+            else
+            {
+                UE_LOG(LogBlueprint, Warning, TEXT("Invalid influencer format: %s"), *InfluencerString);
+            }
+        }
+
+        if (Entry.Influencers.Num() > 0)
+            UsingInfluencers = true;
+
+        EntryCache.Add(Entry);
+    }
+
+    HasTableCacheBuilt = true;
+    WeightMapDirty = true;
+}
+
+void USpawnQuerySampler_Pool::BuildWeightCache(const USpawnQueryContext& Context)
+{
+    TotalWeights = 0;
+    EntryNum = 0;
+    UsingInfluencers = false;
+    WeightMap.Reset();
+
+    auto RowMap = PoolTable->GetRowMap();
+    const UBlackboardComponent& Blackboard = Context.GetBlackboardRef();
+
+    for (auto Row : RowMap)
+    {
+        FSpawnEntryTableRowBase* RowValue = reinterpret_cast<FSpawnEntryTableRowBase*>(Row.Value);
+        float Weight = RowValue->Weight;
+
+        for (auto Influencer : EntryCache[EntryNum].Influencers)
+        {
+            Weight += Blackboard.GetValueAsFloat(Influencer.InfluencerName) * Influencer.Factor;
+        }
+
+        if (Weight > 0)
+        {
+            TotalWeights += Weight;
+        }
+
         WeightMap.Add(TotalWeights);
         EntryNum++;
     }
 
-    HasWeightMapBuilt = true;
     WeightMapDirty = false;
 }
 

@@ -5,10 +5,10 @@
 
 TWeakObjectPtr<USpawnQueryContext> USpawnEntryFunctionLibrary::CachedGlobalContext;
 
-USpawnQueryContext* USpawnEntryFunctionLibrary::ConstructSpawnQueryContext(const FName Name, UObject* Outer)
+USpawnQueryContext* USpawnEntryFunctionLibrary::ConstructSpawnQueryContext(const FName Name, UObject* Outer, UBlackboardData* BlackboardAsset)
 {
     FSpawnQueryModule& SpawnQueryEditorModule = FModuleManager::LoadModuleChecked<FSpawnQueryModule>("SpawnQuery");
-    return SpawnQueryEditorModule.ConstructContext(Name, Outer);
+    return SpawnQueryEditorModule.ConstructContext(Name, Outer, BlackboardAsset);
 }
 
 USpawnQueryContext* USpawnEntryFunctionLibrary::GetDefaultSpawnQueryContext()

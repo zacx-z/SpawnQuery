@@ -4,6 +4,18 @@
 #include "SpawnQuery/SpawnQueryNode_Sampler.h"
 #include "SpawnQuerySampler_Pool.generated.h"
 
+struct FSpawnerQueryPool_InfluencerEntry
+{
+    FName InfluencerName;
+    float Factor;
+};
+
+struct FSpawnerQueryPool_EntryCache
+{
+    TArray<FSpawnerQueryPool_InfluencerEntry> Influencers;
+};
+
+
 UCLASS(MinimalAPI)
 class USpawnQuerySampler_Pool : public USpawnQueryNode_Sampler
 {
@@ -15,33 +27,37 @@ public:
 
 public:
 
-#if WITH_EDITOR
     //~ Begin UObject Interface
     virtual void PostLoad() override;
+    virtual void BeginDestroy() override;
+#if WITH_EDITOR
     virtual void PreEditChange(FProperty* PropertyAboutToChange) override;
     virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
-    virtual void BeginDestroy() override;
-    //~ End UObject Interface
 #endif
+    //~ End UObject Interface
 
     //~ Begin USpawnQueryNode Interface
     virtual FText GetDescriptionDetails() const override;
 
-    virtual bool IsActive(const USpawnQueryContext& context) override;
-    virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& context) override;
+    virtual bool IsActive(const USpawnQueryContext& Context) override;
+    virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& Context) override;
 
     virtual void Refresh() override;
     //~ End USpawnQueryNode Interface
 
 private:
 
-    void BuildWeightMap();
+    void BuildTableCache();
+    void BuildWeightCache(const USpawnQueryContext& Context);
     int32 SearchEntryByWeightPosition(double WeightPosition);
 
     void OnPoolTableDataChanged();
 
-    bool HasWeightMapBuilt = false;
+    bool HasTableCacheBuilt = false;
     bool WeightMapDirty = false;
+    bool UsingInfluencers;
+
+    TArray<FSpawnerQueryPool_EntryCache> EntryCache;
     TArray<float> WeightMap;
     double TotalWeights = 0;
     int32 EntryNum;

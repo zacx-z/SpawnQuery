@@ -36,6 +36,16 @@ void USpawnQueryContext::SetSpawnQueryActiveState(const USpawnQuery* SpawnQuery,
     QueryActiveStateMap.Add(SpawnQuery, bActiveState);
 }
 
+void USpawnQueryContext::SetBlackboardAsset(UBlackboardData* InBlackboardAsset)
+{
+    BlackboardAsset = InBlackboardAsset;
+
+    if (BlackboardPtr != nullptr)
+    {
+        BlackboardPtr->InitializeBlackboard(*InBlackboardAsset);
+    }
+}
+
 void USpawnQueryContext::SetSeed(int32 Seed)
 {
     RandomSeed = Seed;
@@ -139,6 +149,11 @@ void USpawnQueryContext::CreateActor() const
     {
         NewBlackboardHolderActor->SetActorLabel(GetName() + "_Actor");
         BlackboardPtr = NewBlackboardHolderActor->GetBlackboardComponent();
+
+        if (BlackboardAsset != nullptr)
+        {
+            BlackboardPtr->InitializeBlackboard(*BlackboardAsset);
+        }
     } else
     {
         UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext %s: Failed to spawn SpawnQueryContextActor."), *GetName());

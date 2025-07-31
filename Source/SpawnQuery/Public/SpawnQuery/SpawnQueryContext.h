@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BlackboardAssetProvider.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "UObject/ObjectMacros.h"
 #include "UObject/Object.h"
 #include "SpawnQueryContext.generated.h"
@@ -40,6 +42,9 @@ public:
         return BlackboardPtr;
     }
 
+    UFUNCTION(BlueprintCallable, Category="SpawnQuery")
+    void SetBlackboardAsset(UBlackboardData* InBlackboardAsset);
+
     const UBlackboardComponent& GetBlackboardRef() const
     {
         if (BlackboardPtr == nullptr)
@@ -66,6 +71,7 @@ public:
     bool HasQueryInCallStack(USpawnQuery* Query) const;
     FString GetCallStackInfo();
 
+
 protected:
     UObject* GetStateObjectInternal(UObject* Owner, UClass* StateObjectClass);
 
@@ -84,6 +90,9 @@ private:
 
     UPROPERTY()
     mutable TObjectPtr<UBlackboardComponent> BlackboardPtr;
+
+    UPROPERTY()
+    TWeakObjectPtr<UBlackboardData> BlackboardAsset;
 
     void CreateActor() const;
     UWorld* GetRelevantWorld() const;
