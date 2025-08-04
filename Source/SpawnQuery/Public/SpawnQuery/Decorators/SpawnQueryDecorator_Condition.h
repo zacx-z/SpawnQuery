@@ -6,17 +6,6 @@
 
 class FConditionDecoratorDetails;
 
-UENUM()
-namespace EBlackboardKeyType
-{
-    enum Type : uint8
-    {
-        Int,
-        Float,
-        String
-    };
-}
-
 UCLASS(MinimalAPI)
 class USpawnQueryDecorator_Condition : public USpawnQueryNode_Decorator
 {
@@ -28,8 +17,10 @@ protected:
 #endif
 
 public:
-    virtual FText GetDescriptionDetails() const override;
-    virtual bool IsActive(const USpawnQueryContext& Context) override;
+    //~ begin USpawnQueryNode
+    SPAWNQUERY_API virtual FText GetDescriptionDetails() const override;
+    SPAWNQUERY_API virtual bool IsActive(const USpawnQueryContext& Context) override;
+    //~ end USpawnQueryNode
 
 protected:
 
@@ -58,7 +49,7 @@ protected:
 
     /** cached description */
     UPROPERTY()
-    FString CachedDescription;
+    FText CachedDescription;
 
     /** operation type */
     UPROPERTY()
@@ -78,4 +69,10 @@ protected:
 #endif
 
     friend FConditionDecoratorDetails;
+
+private:
+#if WITH_EDITOR
+    void BuildDescription();
+#endif
+    void RefreshEnumBasedDecorator();
 };
