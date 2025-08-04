@@ -41,6 +41,9 @@ protected:
     UPROPERTY(EditAnywhere, Category=Blackboard)
     TSubclassOf<UBlackboardKeyType> BlackboardKeyType;
 
+    UPROPERTY(EditAnywhere, Category=Blackboard)
+    TObjectPtr<UEnum> EnumType;
+
     /** value for arithmetic operations */
     UPROPERTY(Category=Blackboard, EditAnywhere, meta=(DisplayName="Key Value"))
     int32 IntValue;

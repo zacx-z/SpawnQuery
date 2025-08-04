@@ -44,6 +44,16 @@ void FConditionDecoratorDetails::CustomizeDetails(IDetailLayoutBuilder& DetailLa
         OnKeyTypeChanged();
     }
 
+    IDetailPropertyRow& EnumTypeRow = BBCategory.AddProperty(DetailLayout.GetProperty(GET_MEMBER_NAME_CHECKED(USpawnQueryDecorator_Condition, EnumType)));
+    EnumTypeRow.Visibility(TAttribute<EVisibility>::Create(TAttribute<EVisibility>::FGetter::CreateLambda(
+        [&]()
+        {
+            return (CachedKeyType == UBlackboardKeyType_Enum::StaticClass() || CachedKeyType == UBlackboardKeyType_NativeEnum::StaticClass())
+            ? EVisibility::Visible : EVisibility::Collapsed;
+        })));
+
+    EnumTypeRow.GetPropertyHandle()->SetOnPropertyValueChanged(FSimpleDelegate::CreateSP(this, &FConditionDecoratorDetails::OnKeyTypeChanged));
+
 #if WITH_EDITORONLY_DATA
 
     IDetailPropertyRow& BasicOpRow = BBCategory.AddProperty(DetailLayout.GetProperty(GET_MEMBER_NAME_CHECKED(USpawnQueryDecorator_Condition, BasicOperation)));
@@ -97,7 +107,6 @@ void FConditionDecoratorDetails::CustomizeDetails(IDetailLayoutBuilder& DetailLa
         })));
     StringValueRow.IsEnabled(PropertyEditCheck);
 
-    // TODO: need a control to specify a concrete enum type
     IDetailPropertyRow& EnumValueRow = BBCategory.AddProperty(StringValueProperty);
     EnumValueRow.Visibility(TAttribute<EVisibility>::Create(TAttribute<EVisibility>::FGetter::CreateLambda(
         [&]()
@@ -167,23 +176,31 @@ void FConditionDecoratorDetails::OnKeyTypeChanged()
         }
     }
 
-    
     // special handling of enum type: cache all names for combo box (display names)
     UEnum* SelectedEnumType = nullptr;
     if (CachedKeyType == UBlackboardKeyType_Enum::StaticClass())
     {
-        SelectedEnumType = CachedKeyType->GetDefaultObject<UBlackboardKeyType_Enum>()->EnumType;
+        if (CachedConditionDecorator->EnumType && !CachedConditionDecorator->EnumType->IsNative())
+        {
+            SelectedEnumType = CachedConditionDecorator->EnumType;
+        } else
+        {
+            SelectedEnumType = CachedKeyType->GetDefaultObject<UBlackboardKeyType_Enum>()->EnumType;
+        }
     }
     else if (CachedKeyType == UBlackboardKeyType_NativeEnum::StaticClass())
     {
-        SelectedEnumType = CachedKeyType->GetDefaultObject<UBlackboardKeyType_NativeEnum>()->EnumType;
+        if (CachedConditionDecorator->EnumType && !CachedConditionDecorator->EnumType->IsNative())
+        {
+            SelectedEnumType = CachedConditionDecorator->EnumType;
+        } else
+        {
+            SelectedEnumType = CachedKeyType->GetDefaultObject<UBlackboardKeyType_NativeEnum>()->EnumType;
+        }
     }
 
-    if (SelectedEnumType)
-    {
-        CachedCustomObjectType = SelectedEnumType;
-        RefreshEnumPropertyValues();
-    }
+    CachedCustomObjectType = SelectedEnumType;
+    RefreshEnumPropertyValues();
 }
 
 void FConditionDecoratorDetails::RefreshEnumPropertyValues()
@@ -192,7 +209,6 @@ void FConditionDecoratorDetails::RefreshEnumPropertyValues()
 
     if (CachedCustomObjectType)
     {
-        UE_LOG(LogTemp, Warning, TEXT("a %p"), CachedCustomObjectType);
         for (int32 i = 0; i < CachedCustomObjectType->NumEnums() - 1; i++)
         {
             FString DisplayedName = CachedCustomObjectType->GetDisplayNameTextByIndex(i).ToString();
