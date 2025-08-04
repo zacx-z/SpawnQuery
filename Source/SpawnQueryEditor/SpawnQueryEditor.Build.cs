@@ -35,6 +35,7 @@ public class SpawnQueryEditor : ModuleRules
 			new string[]
 			{
 				"Projects",
+				"AIModule",
 				"AIGraph",
 				"AssetDefinition",
 				"InputCore",
@@ -50,7 +51,7 @@ public class SpawnQueryEditor : ModuleRules
 				"KismetWidgets",
 				"KismetCompiler",
 				// ... add private dependencies that you statically link with here ...	
-				"SpawnQuery", "AIModule"
+				"SpawnQuery"
 			}
 			);
 		

@@ -38,7 +38,7 @@ public:
     SPAWNQUERY_API TObjectPtr<USpawnEntryBase> QueryEntry(USpawnQueryContext& Context) const;
 
     // Blueprint version
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintPure)
     bool IsActive(const USpawnQueryContext* Context = nullptr);
     UFUNCTION(BlueprintCallable)
     void SetActiveState(bool bActiveState, USpawnQueryContext* Context = nullptr);

@@ -18,6 +18,7 @@
 #include "EdGraphUtilities.h"
 #include "SpawnQueryEditorStyle.h"
 #include "SpawnQueryModule.h"
+#include "DetailCustomizations/ConditionDecoratorDetails.h"
 
 const FName FSpawnQueryEditorModule::SpawnQueryEditorAppIdentifier(TEXT("SpawnQueryEditorApp"));
 
@@ -47,6 +48,9 @@ void FSpawnQueryEditorModule::StartupModule()
 
     GraphPanelNodeFactory_SpawnQuery = MakeShareable(new FGraphPanelNodeFactory_SpawnQuery());
     FEdGraphUtilities::RegisterVisualNodeFactory(GraphPanelNodeFactory_SpawnQuery);
+
+    FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+    PropertyModule.RegisterCustomClassLayout("SpawnQueryDecorator_Condition", FOnGetDetailCustomizationInstance::CreateStatic(&FConditionDecoratorDetails::MakeInstance));
 
     FEditorDelegates::PreBeginPIE.AddRaw(this, &FSpawnQueryEditorModule::OnPreBeginPIE);
 }
