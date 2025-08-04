@@ -5,7 +5,7 @@
 UCLASS(MinimalAPI)
 class USpawnQueryGraphNode_Decorator : public USpawnQueryGraphNode
 {
-    GENERATED_BODY()
+    GENERATED_UCLASS_BODY()
 
 public:
     SPAWNQUERYEDITOR_API virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;

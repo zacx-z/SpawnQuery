@@ -5,6 +5,12 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(SpawnQueryGraphNode_Decorator)
 
+USpawnQueryGraphNode_Decorator::USpawnQueryGraphNode_Decorator(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    bIsSubNode = true;
+}
+
 FText USpawnQueryGraphNode_Decorator::GetNodeTitle(ENodeTitleType::Type TitleType) const
 {
     const USpawnQueryNode_Decorator* Decorator = Cast<USpawnQueryNode_Decorator>(NodeInstance);
