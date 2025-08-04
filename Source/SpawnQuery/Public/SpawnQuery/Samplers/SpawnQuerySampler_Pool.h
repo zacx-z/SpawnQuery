@@ -24,6 +24,15 @@ struct FSpawnerQueryPool_EntryCache
     float GetWeight(USpawnQueryContext& Context);
 };
 
+UENUM()
+enum EBranchWeightMethod
+{
+    Default,
+    TotalEntries,
+    TotalEntryWeight,
+    AverageEntryWeight
+};
+
 UCLASS(MinimalAPI)
 class USpawnQuerySampler_Pool : public USpawnQueryNode_Sampler
 {
@@ -34,6 +43,8 @@ public:
     TObjectPtr<UDataTable> PoolTable;
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TEnumAsByte<ERandomizationPolicy> RandomizationPolicy;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TEnumAsByte<EBranchWeightMethod> BranchWeight;
 
 public:
 
@@ -51,6 +62,7 @@ public:
 
     virtual bool IsActive(const USpawnQueryContext& Context) override;
     virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& Context) override;
+    virtual float GetWeight(const USpawnQueryContext& Context) override;
 
 #if WITH_EDITOR
     virtual void Refresh() override;

@@ -100,10 +100,7 @@ TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& C
     }
 #endif
 
-    if (!HasTableCacheBuilt)
-    {
-        BuildTableCache();
-    }
+    BuildTableCache();
 
     if (UsingInfluencers)
     {
@@ -144,6 +141,30 @@ TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& C
     return handle;
 }
 
+float USpawnQuerySampler_Pool::GetWeight(const USpawnQueryContext& Context)
+{
+    if (BranchWeight == EBranchWeightMethod::Default)
+    {
+        return Super::GetWeight(Context);
+    }
+
+    BuildTableCache();
+
+    switch (BranchWeight)
+    {
+    case EBranchWeightMethod::TotalEntries:
+        return EntryNum;
+    case EBranchWeightMethod::TotalEntryWeight:
+        BuildWeightCache(Context);
+        return WeightMap[EntryNum - 1];
+    case EBranchWeightMethod::AverageEntryWeight:
+        BuildWeightCache(Context);
+        return WeightMap[EntryNum - 1] / static_cast<float>(EntryNum);
+    default:
+        return Super::GetWeight(Context);
+    }
+}
+
 #if WITH_EDITOR
 
 void USpawnQuerySampler_Pool::Refresh()
@@ -163,7 +184,7 @@ void USpawnQuerySampler_Pool::BuildTableCache()
     if (HasTableCacheBuilt) return;
 
     EntryCache.Reset();
-    auto RowMap = PoolTable->GetRowMap();
+    TMap<FName, uint8*> RowMap = PoolTable->GetRowMap();
 
     for (auto Row : RowMap)
     {
@@ -199,14 +220,18 @@ void USpawnQuerySampler_Pool::BuildTableCache()
         EntryCache.Add(Entry);
     }
 
+    EntryNum = EntryCache.Num();
+
     HasTableCacheBuilt = true;
     WeightMapDirty = true;
 }
 
 void USpawnQuerySampler_Pool::BuildWeightCache(const USpawnQueryContext& Context)
 {
+    if (!WeightMapDirty) return;
+
+    int Index = 0;
     TotalWeights = 0;
-    EntryNum = 0;
     UsingInfluencers = false;
     WeightMap.Reset();
 
@@ -218,7 +243,7 @@ void USpawnQuerySampler_Pool::BuildWeightCache(const USpawnQueryContext& Context
         FSpawnEntryTableRowBase* RowValue = reinterpret_cast<FSpawnEntryTableRowBase*>(Row.Value);
         float Weight = RowValue->Weight;
 
-        for (auto Influencer : EntryCache[EntryNum].Influencers)
+        for (auto Influencer : EntryCache[Index].Influencers)
         {
             Weight += Blackboard.GetValueAsFloat(Influencer.InfluencerName) * Influencer.Factor;
         }
@@ -229,7 +254,7 @@ void USpawnQuerySampler_Pool::BuildWeightCache(const USpawnQueryContext& Context
         }
 
         WeightMap.Add(TotalWeights);
-        EntryNum++;
+        Index++;
     }
 
     WeightMapDirty = false;
