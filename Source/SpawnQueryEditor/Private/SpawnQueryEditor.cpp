@@ -240,8 +240,8 @@ void FSpawnQueryEditor::CreateInternalWidgets()
     FDetailsViewArgs DetailsViewArgs;
     DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
     DetailsView = PropertyEditorModule.CreateDetailView( DetailsViewArgs );
-    DetailsView->SetObject( nullptr );
-    //DetailsView->OnFinishedChangingProperties().AddSP(this, &FSpawnQueryEditor::OnFinishedChangingProperties);
+    DetailsView->SetObject(nullptr);
+    DetailsView->OnFinishedChangingProperties().AddSP(this, &FSpawnQueryEditor::OnFinishedChangingProperties);
 }
 
 void FSpawnQueryEditor::OnSelectedNodesChanged(const TSet<UObject*>& NewSelection)
@@ -283,6 +283,26 @@ void FSpawnQueryEditor::OnSelectedNodesChanged(const TSet<UObject*>& NewSelectio
         {
             DetailsView->SetObject(nullptr);
         }
+    }
+}
+
+void FSpawnQueryEditor::PostUndo(bool bSuccess)
+{
+    FAIGraphEditor::PostUndo(bSuccess);
+    
+    USpawnQueryGraph* MyGraph = Cast<USpawnQueryGraph>(Query->EdGraph);
+    if (MyGraph)
+    {
+        MyGraph->UpdateErrorMessages();
+    }
+}
+
+void FSpawnQueryEditor::OnFinishedChangingProperties(const FPropertyChangedEvent& PropertyChangedEvent)
+{
+    USpawnQueryGraph* MyGraph = Cast<USpawnQueryGraph>(Query->EdGraph);
+    if (MyGraph)
+    {
+        MyGraph->UpdateErrorMessages();
     }
 }
 

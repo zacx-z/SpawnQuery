@@ -67,6 +67,7 @@ public:
 #if WITH_EDITOR
     virtual void Refresh() override;
 #endif
+    virtual FString GetErrorMessage() const override;
     //~ End USpawnQueryNode Interface
 
 private:

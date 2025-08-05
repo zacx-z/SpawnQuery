@@ -47,6 +47,9 @@ private:
 
     /** Called when the selection changes in the GraphEditor */
     void OnSelectedNodesChanged(const TSet<UObject*>& NewSelection) override;
+    virtual void PostUndo(bool bSuccess) override;
+
+    void OnFinishedChangingProperties(const FPropertyChangedEvent& PropertyChangedEvent);
 
     /** Spawns the tab with the update graph inside */
     TSharedRef<SDockTab> SpawnTab_QueryGraph(const FSpawnTabArgs& Args);

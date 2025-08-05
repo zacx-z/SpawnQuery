@@ -5,6 +5,7 @@
 #include "SpawnQueryEditorTypes.h"
 #include "SpawnQueryGraph.h"
 #include "SpawnQueryGraphNode_Decorator.h"
+#include "SpawnQuery/SpawnQueryNode.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(SpawnQueryGraphNode)
 
@@ -81,6 +82,19 @@ void USpawnQueryGraphNode::InsertSubNodeAt(UAIGraphNode* SubNode, int32 DropInde
         else
         {
             Decorators.Add(TypedNode);
+        }
+    }
+}
+
+void USpawnQueryGraphNode::UpdateErrorMessage()
+{
+    Super::UpdateErrorMessage();
+
+    if (ErrorMessage.IsEmpty())
+    {
+        if (const USpawnQueryNode* Instance = Cast<USpawnQueryNode>(NodeInstance))
+        {
+            ErrorMessage = Instance->GetErrorMessage();
         }
     }
 }

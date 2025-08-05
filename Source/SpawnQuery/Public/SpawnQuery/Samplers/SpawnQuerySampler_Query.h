@@ -15,8 +15,9 @@ public:
     //~ Begin USpawnQueryNode Interface
     virtual FText GetDescriptionDetails() const override;
 
-    virtual bool IsActive(const USpawnQueryContext& context) override;
-    virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& context) override;
+    virtual bool IsActive(const USpawnQueryContext& Context) override;
+    virtual TObjectPtr<USpawnEntryBase> Query(USpawnQueryContext& Context) override;
+    virtual FString GetErrorMessage() const override;
     //~ End USpawnQueryNode Interface
 
 public:

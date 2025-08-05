@@ -179,6 +179,20 @@ void USpawnQuerySampler_Pool::Refresh()
 
 #endif
 
+FString USpawnQuerySampler_Pool::GetErrorMessage() const
+{
+    if (PoolTable == nullptr)
+    {
+        return "Pool table is not set";
+    }
+    if (EntryNum == 0)
+    {
+        return "Pool table has no entries";
+    }
+    
+    return Super::GetErrorMessage();
+}
+
 void USpawnQuerySampler_Pool::BuildTableCache()
 {
     if (HasTableCacheBuilt) return;

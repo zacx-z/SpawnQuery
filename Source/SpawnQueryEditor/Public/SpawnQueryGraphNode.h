@@ -30,6 +30,7 @@ class SPAWNQUERYEDITOR_API USpawnQueryGraphNode : public UAIGraphNode
     virtual void OnSubNodeRemoved(UAIGraphNode* SubNode) override;
     virtual void RemoveAllSubNodes() override;
     virtual void InsertSubNodeAt(UAIGraphNode* SubNode, int32 DropIndex) override;
+    virtual void UpdateErrorMessage() override;
     //~ End UAIGraphNode
 
     virtual bool CanCreateUnderSpecifiedSchema(const UEdGraphSchema* DesiredSchema) const override;

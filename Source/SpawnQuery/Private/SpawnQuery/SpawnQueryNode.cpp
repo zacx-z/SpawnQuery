@@ -31,6 +31,11 @@ float USpawnQueryNode::GetWeight(const USpawnQueryContext& Context)
     return Weight;
 }
 
+FString USpawnQueryNode::GetErrorMessage() const
+{
+    return FString();
+}
+
 bool USpawnQueryNode::IsSubtreeActive(const USpawnQueryContext& Context)
 {
     return IsActive(Context) && CheckDecoratorsActive(Context);

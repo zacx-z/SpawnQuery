@@ -39,6 +39,10 @@ public:
      * The weight for being randomized by of parent nodes
      */
     virtual float GetWeight(const USpawnQueryContext& Context);
+    /**
+     * Validates this node and returns the resulting error message. Empty means no error.
+     */
+    virtual FString GetErrorMessage() const;
 
 
     /**

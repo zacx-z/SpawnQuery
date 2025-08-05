@@ -15,20 +15,29 @@ FText USpawnQuerySampler_Query::GetDescriptionDetails() const
     }
 }
 
-bool USpawnQuerySampler_Query::IsActive(const USpawnQueryContext& context)
+bool USpawnQuerySampler_Query::IsActive(const USpawnQueryContext& Context)
 {
-    return QueryGraph != nullptr && QueryGraph->IsActive(context);
+    return QueryGraph != nullptr && QueryGraph->IsActive(Context);
 }
 
-TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Query::Query(USpawnQueryContext& context)
+TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Query::Query(USpawnQueryContext& Context)
 {
-    if (QueryGraph == nullptr || !QueryGraph->IsActive(context)) return nullptr;
+    if (QueryGraph == nullptr || !QueryGraph->IsActive(Context)) return nullptr;
 
-    if (context.HasQueryInCallStack(QueryGraph))
+    if (Context.HasQueryInCallStack(QueryGraph))
     {
-        UE_LOG(LogBlueprint, Error, TEXT("Recursion detected in SpawnQuery graph '%s'. Call Stack: %s"), *QueryGraph->GetName(), *context.GetCallStackInfo());
+        UE_LOG(LogBlueprint, Error, TEXT("Recursion detected in SpawnQuery graph '%s'. Call Stack: %s"), *QueryGraph->GetName(), *Context.GetCallStackInfo());
 
         return nullptr;
     }
-    return QueryGraph->QueryEntry(context);
+    return QueryGraph->QueryEntry(Context);
+}
+
+FString USpawnQuerySampler_Query::GetErrorMessage() const
+{
+    if (QueryGraph == nullptr)
+    {
+        return TEXT("QueryGraph is not set");
+    }
+    return Super::GetErrorMessage();
 }
