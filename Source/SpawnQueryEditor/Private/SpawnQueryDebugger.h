@@ -36,10 +36,7 @@ public:
     {
         return CurrentDebugContext;
     }
-    void SetCurrentDebugContext(TWeakObjectPtr<USpawnQueryContext> InContext)
-    {
-        CurrentDebugContext = InContext;
-    }
+    void SetCurrentDebugContext(TWeakObjectPtr<USpawnQueryContext> InContext);
 
 private:
 

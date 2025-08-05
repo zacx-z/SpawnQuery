@@ -121,6 +121,16 @@ bool FSpawnQueryDebugger::AreAllGameWorldPaused()
     return bPaused;
 }
 
+void FSpawnQueryDebugger::SetCurrentDebugContext(TWeakObjectPtr<USpawnQueryContext> InContext)
+{
+    CurrentDebugContext = InContext;
+
+    if (InContext.IsValid())
+    {
+        UpdateAssetFlags(*InContext, RootNode.Get());
+    }
+}
+
 void FSpawnQueryDebugger::CacheRootNode()
 {
     if (RootNode.IsValid()) return;
