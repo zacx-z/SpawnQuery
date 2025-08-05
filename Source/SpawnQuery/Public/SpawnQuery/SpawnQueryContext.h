@@ -10,7 +10,7 @@
 
 class USpawnQuery;
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, MinimalAPI, Transient)
 class USpawnQueryContext : public UObject
 {
     GENERATED_BODY()

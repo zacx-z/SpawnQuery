@@ -158,7 +158,9 @@ void USpawnQueryContext::CreateActor() const
 
     if (NewBlackboardHolderActor)
     {
+#if WITH_EDITOR
         NewBlackboardHolderActor->SetActorLabel(GetName() + "_Actor");
+#endif
         BlackboardPtr = NewBlackboardHolderActor->GetBlackboardComponent();
 
         if (BlackboardAsset != nullptr)
