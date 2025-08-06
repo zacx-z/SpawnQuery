@@ -16,7 +16,7 @@ public:
     TEnumAsByte<ERandomizationPolicy> RandomizationPolicy;
 };
 
-UCLASS()
+UCLASS(MinimalAPI)
 class USpawnQueryComposite_RandomSelector_State : public UObject
 {
     GENERATED_BODY()
