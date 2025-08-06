@@ -81,7 +81,7 @@ TObjectPtr<USpawnEntryBase> USpawnQueryComposite_PrioritySelector::Query(
 
     if (ActiveChild)
     {
-        Entry = ActiveChild->Query(Context);
+        Entry = ActiveChild->GetQueryResult(Context);
     }
     else
     {
@@ -91,7 +91,7 @@ TObjectPtr<USpawnEntryBase> USpawnQueryComposite_PrioritySelector::Query(
     if (Entry) return Entry;
 
     UE_LOG(LogBlueprint, Warning, TEXT("Active child returns no entry in USpawnQueryComposite_PrioritySelector::Query"));
-    return Super::Query(Context);
+    return nullptr;
 }
 
 void USpawnQueryComposite_PrioritySelector::BuildPriorityStates(USpawnQueryContext& Context)

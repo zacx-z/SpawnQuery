@@ -17,5 +17,5 @@ TObjectPtr<USpawnEntryBase> USpawnQueryComposite_RandomSelector::Query(USpawnQue
         return nullptr;
     }
 
-    return Children[Picked].ChildNode->Query(Context);
+    return Children[Picked].ChildNode->GetQueryResult(Context);
 }

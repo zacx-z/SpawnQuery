@@ -25,7 +25,7 @@ TObjectPtr<USpawnEntryBase> USpawnQuery::QueryEntry(USpawnQueryContext& Context)
     if (!IsActive(Context))
         return nullptr;
 
-    return RootNode->Query(Context);
+    return RootNode->GetQueryResult(Context);
 }
 
 bool USpawnQuery::IsActive(const USpawnQueryContext* Context)

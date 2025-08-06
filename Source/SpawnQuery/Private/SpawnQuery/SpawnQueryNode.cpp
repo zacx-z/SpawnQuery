@@ -41,6 +41,16 @@ bool USpawnQueryNode::IsSubtreeActive(const USpawnQueryContext& Context)
     return IsActive(Context) && CheckDecoratorsActive(Context);
 }
 
+TObjectPtr<USpawnEntryBase> USpawnQueryNode::GetQueryResult(USpawnQueryContext& Context)
+{
+    TObjectPtr<USpawnEntryBase> Entry = Query(Context);
+    for (USpawnQueryNode_Decorator* Decorator : Decorators)
+    {
+        Entry = Decorator->Rewrite(Entry, Context);
+    }
+    return Entry;
+}
+
 bool USpawnQueryNode::CheckDecoratorsActive(const USpawnQueryContext& Context)
 {
     for (auto Decorator : Decorators)

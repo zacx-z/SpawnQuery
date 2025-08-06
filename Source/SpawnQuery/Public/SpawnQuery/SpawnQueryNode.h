@@ -50,6 +50,11 @@ public:
      */
     bool IsSubtreeActive(const USpawnQueryContext& Context);
 
+    /**
+     * Query with decorators rewriting.
+     */
+    TObjectPtr<USpawnEntryBase> GetQueryResult(USpawnQueryContext& Context);
+
     UPROPERTY()
     TArray<TObjectPtr<USpawnQueryNode_Decorator>> Decorators;
 
