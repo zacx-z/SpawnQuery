@@ -87,7 +87,8 @@ TObjectPtr<USpawnEntryBase> USpawnQuerySampler_Pool::Query(USpawnQueryContext& C
     if (PoolTable == nullptr) return nullptr;
     if (!PoolTable->GetRowStruct()->IsChildOf(FSpawnEntryTableRowBase::StaticStruct()))
     {
-        UE_LOG(LogSpawnQuery, Warning, TEXT("Mismatched row struct type in USpawnQuerySampler_Pool::Query"));
+        UE_LOG(LogSpawnQuery, Warning, TEXT("Wrong row struct type in USpawnQuerySampler_Pool::Query. Need to inherit from FSpawnEntryTableRowBase; Got: %s")
+            , *PoolTable->GetRowStruct()->GetName());
         return nullptr;
     }
 
@@ -188,6 +189,10 @@ FString USpawnQuerySampler_Pool::GetErrorMessage() const
     if (EntryNum == 0)
     {
         return "Pool table has no entries";
+    }
+    if (!PoolTable->GetRowStruct()->IsChildOf(FSpawnEntryTableRowBase::StaticStruct()))
+    {
+        return "Pool table row type has to derive from FSpawnEntryTableRowBase";
     }
     
     return Super::GetErrorMessage();

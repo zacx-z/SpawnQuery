@@ -17,10 +17,10 @@ public:
     {
     }
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Randomization Settings")
     float Weight;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Randomization Settings")
     FString Influencers;
 };
 
@@ -48,7 +48,7 @@ public:
     template<typename T>
     T* GetTableRow()
     {
-        if (!PoolTable->GetRowStruct()->IsA(T::StaticStruct()))
+        if (!PoolTable->GetRowStruct()->IsChildOf(T::StaticStruct()))
         {
             return nullptr;
         }

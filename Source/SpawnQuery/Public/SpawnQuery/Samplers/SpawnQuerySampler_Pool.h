@@ -51,7 +51,7 @@ class USpawnQuerySampler_Pool : public USpawnQueryNode_Sampler
     GENERATED_UCLASS_BODY()
     
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (RequiredAssetDataTags = "RowStructure=/Script/SpawnQuery.SpawnEntryTableRowBase"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<UDataTable> PoolTable;
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TEnumAsByte<ERandomizationPolicy> RandomizationPolicy;
