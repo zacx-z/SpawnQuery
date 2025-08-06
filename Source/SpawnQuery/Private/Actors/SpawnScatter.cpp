@@ -30,11 +30,17 @@ void ASpawnScatter::BeginPlay()
                         Rotation = FRotator(0.0f, FMath::FRand() * 360.0f, 0.0f);
 
                     // Spawn the actor at the generated location and rotation
-                    FActorSpawnParameters SpawnParams;
                     TSoftClassPtr<AActor> ActorClassAsset = Row->ActorClass;
-                    if (UClass* ActorClass = ActorClassAsset.LoadSynchronous())
+                    if (ActorClassAsset.IsValid())
                     {
-                        GetWorld()->SpawnActor<AActor>(ActorClass, RandomLocation, Rotation, SpawnParams);
+                        GetWorld()->SpawnActor<AActor>(ActorClassAsset.Get(), RandomLocation, Rotation);
+                    }
+                    else
+                    {
+                        ActorClassAsset.LoadAsync(FLoadSoftObjectPathAsyncDelegate::CreateLambda([&](const FSoftObjectPath& Path, UObject* Class)
+                        {
+                            GetWorld()->SpawnActor<AActor>(static_cast<UClass*>(Class), RandomLocation, Rotation);
+                        }));
                     }
                 }
             }
