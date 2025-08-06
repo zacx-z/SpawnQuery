@@ -19,6 +19,12 @@ namespace SpawnQueryTypes
 UENUM(BlueprintType)
 enum ERandomizationPolicy : uint8
 {
+    /**
+     * Traditional randomization method that aims for independent probabilities.
+     */
     Independent,
+    /**
+     * Every choice shows up a certain times (dictated by weight) in a random order before repeating.
+     */
     ShuffledSequence
 };

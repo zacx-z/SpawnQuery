@@ -14,10 +14,16 @@ public:
 
 public:
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ToolTip="If set, prioritize the subtrees on the right."))
+    /**
+     * If set, prioritize the subtrees on the right. Otherwise prioritize the subtrees on the left.
+     */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bReverseDirection = false;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ToolTip="If set, lower the priority of a subtree after it yields a result."))
+    /**
+     * If set, lower the priority of a subtree after it yields a result.
+     */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bDynamic = false;
 
 private:

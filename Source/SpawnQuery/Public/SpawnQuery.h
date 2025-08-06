@@ -23,7 +23,7 @@ class USpawnQuery : public UDataAsset
     TObjectPtr<USpawnQueryNode> RootNode;
 
     /**
-     * Defaults to true. The active state of this graph when a context is just created.
+     * Defaults to true. The active state of this graph in a context by default.
      *
      * If a graph is inactive, it won't return any entry.
      * Invocation node to this graph will also be regarded inactive.

@@ -27,9 +27,21 @@ struct FSpawnerQueryPool_EntryCache
 UENUM()
 enum EBranchWeightMethod
 {
+    /**
+     * Fixed to 1.
+     */
     Default,
+    /**
+     * The number of entries.
+     */
     TotalEntries,
+    /**
+     * The sum of all entries' weight. Will be updated if the weights are dynamic.
+     */
     TotalEntryWeight,
+    /**
+     * The average value of all the weight values. Will be updated if the weights are dynamic.
+     */
     AverageEntryWeight
 };
 
@@ -43,6 +55,9 @@ public:
     TObjectPtr<UDataTable> PoolTable;
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TEnumAsByte<ERandomizationPolicy> RandomizationPolicy;
+    /**
+     * How the subtree's weight is calculated based on the pool table.
+     */
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TEnumAsByte<EBranchWeightMethod> BranchWeight;
 
