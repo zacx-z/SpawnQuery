@@ -20,11 +20,6 @@ void USpawnQueryContext::PostInitProperties()
     RandomStream = FRandomStream(RandomSeed);
 }
 
-void USpawnQueryContext::Reset()
-{
-    RandomStream.Reset();
-}
-
 bool USpawnQueryContext::IsSpawnQueryActive(const USpawnQuery* SpawnQuery, bool bDefault) const
 {
     const bool* FoundValue = QueryActiveStateMap.Find(SpawnQuery);
@@ -36,6 +31,32 @@ void USpawnQueryContext::SetSpawnQueryActiveState(const USpawnQuery* SpawnQuery,
     QueryActiveStateMap.Add(SpawnQuery, bActiveState);
 }
 
+void USpawnQueryContext::Reset()
+{
+    if (QueryCallStack.Num() > 0)
+    {
+        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext::Reset: Cannot reset the context while a spawn query is running."));
+        return;
+    }
+
+    RandomStream.Reset();
+    ResetStates();
+}
+
+void USpawnQueryContext::ResetSeed(int32 Seed)
+{
+    if (QueryCallStack.Num() > 0)
+    {
+        UE_LOG(LogSpawnQuery, Error, TEXT("USpawnQueryContext::Reset: Cannot reset the context while a spawn query is running."));
+        return;
+    }
+
+    RandomSeed = Seed;
+    RandomStream = FRandomStream(Seed);
+
+    ResetStates();
+}
+
 void USpawnQueryContext::SetBlackboardAsset(UBlackboardData* InBlackboardAsset)
 {
     BlackboardAsset = InBlackboardAsset;
@@ -44,12 +65,6 @@ void USpawnQueryContext::SetBlackboardAsset(UBlackboardData* InBlackboardAsset)
     {
         BlackboardPtr->InitializeBlackboard(*InBlackboardAsset);
     }
-}
-
-void USpawnQueryContext::SetSeed(int32 Seed)
-{
-    RandomSeed = Seed;
-    RandomStream = FRandomStream(Seed);
 }
 
 void USpawnQueryContext::PushCall(USpawnQuery* Query)
@@ -127,6 +142,16 @@ UObject* USpawnQueryContext::GetStateObjectInternal(UObject* Owner, UClass* Stat
         }
     }
     return nullptr;
+}
+
+void USpawnQueryContext::ResetStates()
+{
+    if (BlackboardPtr && BlackboardPtr->HasValidAsset())
+    {
+        BlackboardPtr->InitializeBlackboard(*BlackboardPtr->GetBlackboardAsset());
+    }
+
+    StateObjectMap.Reset();
 }
 
 void USpawnQueryContext::CreateActor() const

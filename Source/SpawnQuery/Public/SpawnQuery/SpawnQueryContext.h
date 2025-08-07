@@ -27,11 +27,24 @@ public:
         return RandomStream;
     }
 
-    SPAWNQUERY_API void Reset();
-
     bool IsSpawnQueryActive(const USpawnQuery* SpawnQuery, bool bDefault) const;
     void SetSpawnQueryActiveState(const USpawnQuery* SpawnQuery, bool bActiveState);
 
+    /**
+     * Reset all the internal states, with the Blackboard set to its initial state.
+     */
+    UFUNCTION(BlueprintCallable, Category="SpawnQuery")
+    SPAWNQUERY_API void Reset();
+
+    /**
+     * Reset all the internal states and reinitialize with `Seed`. Reset the Blackboard to its initial state.
+     */
+    UFUNCTION(BlueprintCallable, Category="SpawnQuery")
+    SPAWNQUERY_API void ResetSeed(int32 Seed);
+
+    /**
+     * Return the Blackboard component.
+     */
     UFUNCTION(BlueprintPure, Category="SpawnQuery")
     UBlackboardComponent* GetBlackboard()
     {
@@ -42,6 +55,9 @@ public:
         return BlackboardPtr;
     }
 
+    /**
+     * Set the Blackboard asset and reinitialize the Blackboard component.
+     */
     UFUNCTION(BlueprintCallable, Category="SpawnQuery")
     void SetBlackboardAsset(UBlackboardData* InBlackboardAsset);
 
@@ -53,9 +69,6 @@ public:
         }
         return *BlackboardPtr;
     }
-
-    UFUNCTION(BlueprintCallable, Category="SpawnQuery")
-    void SetSeed(int32 Seed);
 
     template<typename T>
     T* GetStateObject(UObject* Owner)
@@ -74,6 +87,7 @@ public:
 
 protected:
     UObject* GetStateObjectInternal(UObject* Owner, UClass* StateObjectClass);
+    void ResetStates();
 
 private:
     FRandomStream RandomStream;
