@@ -24,6 +24,11 @@
 			"Name": "SpawnQueryEditor",
 			"Type": "UncookedOnly",
 			"LoadingPhase": "PreDefault"
+		},
+		{
+			"Name": "ComponentVisualizerEditor",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit"
 		}
 	]
 }

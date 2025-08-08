@@ -1,21 +1,18 @@
 ﻿#pragma once
 #include "CoreMinimal.h"
 #include "SpawnQuery/Pools/SpawnEntryTableRow.h"
-#include "SpawnScatter.generated.h"
+#include "SpawnScatterComponent.generated.h"
 
-class USpawnQuery;
 class USpawnQueryContext;
+class USpawnQuery;
 
-UCLASS(Blueprintable, BlueprintType)
-class ASpawnScatter : public AActor
+UCLASS(BlueprintType)
+class USpawnScatterComponent : public USceneComponent
 {
     GENERATED_BODY()
 
 public:
-    virtual void BeginPlay() override;
-
-    UFUNCTION(BlueprintNativeEvent)
-    USpawnQueryContext* GetContext();
+    SPAWNQUERY_API void SpawnActors(USpawnQueryContext* Context);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn Scatter")
     USpawnQuery* SpawnQuery;
@@ -24,14 +21,10 @@ public:
     int32 Amount = 1;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn Scatter")
-    float ScatterRange;
+    float ScatterRange = 1;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn Scatter")
-    bool bRandomizeRotation;
-
-private:
-
-    TWeakObjectPtr<USpawnQueryContext> CachedGlobalContext;
+    bool bRandomizeRotation = true;
 };
 
 USTRUCT(BlueprintType)

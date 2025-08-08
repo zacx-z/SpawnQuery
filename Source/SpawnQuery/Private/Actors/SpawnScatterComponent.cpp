@@ -1,18 +1,15 @@
-﻿#include "SpawnQuery/Actors/SpawnScatter.h"
+﻿#include "SpawnQuery/Actors/SpawnScatterComponent.h"
 
 #include "SpawnQuery.h"
-#include "SpawnQueryModule.h"
+#include "SpawnQuery/SpawnEntry.h"
+#include "SpawnQuery/Actors/SpawnScatterActor.h"
 #include "SpawnQuery/Pools/SpawnEntryTableRow.h"
-#include "Engine/World.h"
-#include "GameFramework/Actor.h"
 
-void ASpawnScatter::BeginPlay()
+void USpawnScatterComponent::SpawnActors(USpawnQueryContext* Context)
 {
-    Super::BeginPlay();
-
     for (int Index = 0; Index < Amount; Index++)
     {
-        USpawnEntryBase* Entry = SpawnQuery->QueryEntry(GetContext());
+        USpawnEntryBase* Entry = SpawnQuery->QueryEntry(Context);
         if (Entry)
         {
             if (auto RowHandle = Cast<USpawnEntryRowHandle>(Entry))
@@ -22,7 +19,7 @@ void ASpawnScatter::BeginPlay()
                     // Generate a random location within the ScatterRange radius
                     float Angle = FMath::FRand() * 2.0f * PI;
                     float Radius = FMath::Sqrt(FMath::FRand()) * ScatterRange; // Using Sqrt to ensure uniform distribution
-                    FVector RandomLocation = GetActorLocation() + FVector(Radius * FMath::Cos(Angle), Radius * FMath::Sin(Angle), 0.0f);
+                    FVector RandomLocation = GetComponentLocation() + FVector(Radius * FMath::Cos(Angle), Radius * FMath::Sin(Angle), 0.0f);
 
                     // Generate a rotation for the Z-axis
                     FRotator Rotation = FRotator();
@@ -46,15 +43,4 @@ void ASpawnScatter::BeginPlay()
             }
         }
     }
-}
-
-USpawnQueryContext* ASpawnScatter::GetContext_Implementation()
-{
-    if (CachedGlobalContext == nullptr)
-    {
-        FSpawnQueryModule& SpawnQueryEditorModule = FModuleManager::LoadModuleChecked<FSpawnQueryModule>("SpawnQuery");
-        CachedGlobalContext = SpawnQueryEditorModule.GetDefaultContext();
-    }
-
-    return CachedGlobalContext.Get();
 }
