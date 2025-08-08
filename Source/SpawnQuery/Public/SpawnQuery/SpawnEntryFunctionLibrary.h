@@ -19,7 +19,7 @@ public:
      * Get SpawnEntryRow of any subtype from the USpawnEntryRowHandle.
      */
     UFUNCTION(BlueprintCallable, CustomThunk, Category = "SpawnQuery", meta=(CustomStructureParam = "OutRow", BlueprintInternalUseOnly="true"))
-    static SPAWNQUERY_API bool GetSpawnEntryRow(USpawnEntryRowHandle* Entry, FSpawnEntryTableRowBase& OutRow);
+    static SPAWNQUERY_API bool GetSpawnEntryRow(USpawnEntryBase* Entry, FName& OutRowName, FSpawnEntryTableRowBase& OutRow);
     static SPAWNQUERY_API bool Generic_GetSpawnEntryRow(const USpawnEntryRowHandle* Entry, void* OutRowPtr);
     DECLARE_FUNCTION(execGetSpawnEntryRow);
 

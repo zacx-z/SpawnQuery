@@ -22,7 +22,7 @@ USpawnQueryContext* USpawnEntryFunctionLibrary::GetDefaultSpawnQueryContext()
     return CachedGlobalContext.Get();
 }
 
-bool USpawnEntryFunctionLibrary::GetSpawnEntryRow(USpawnEntryRowHandle* Entry, FSpawnEntryTableRowBase& OutRow)
+bool USpawnEntryFunctionLibrary::GetSpawnEntryRow(USpawnEntryBase* Entry, FName& OutRowName, FSpawnEntryTableRowBase& OutRow)
 {
     // We should never arrive here. Just a stub.
     check(0);
@@ -31,7 +31,10 @@ bool USpawnEntryFunctionLibrary::GetSpawnEntryRow(USpawnEntryRowHandle* Entry, F
 
 DEFINE_FUNCTION(USpawnEntryFunctionLibrary::execGetSpawnEntryRow)
 {
-    P_GET_OBJECT(USpawnEntryRowHandle, Entry);
+    P_GET_OBJECT(USpawnEntryBase, Entry);
+
+    Stack.StepCompiledIn<FStructProperty>(nullptr);
+    void* OutRowName = Stack.MostRecentPropertyAddress;
 
     Stack.StepCompiledIn<FStructProperty>(nullptr);
     void* OutRowPtr = Stack.MostRecentPropertyAddress;
@@ -40,8 +43,9 @@ DEFINE_FUNCTION(USpawnEntryFunctionLibrary::execGetSpawnEntryRow)
 
     bool bSuccess = false;
     FStructProperty* StructProp = CastField<FStructProperty>(Stack.MostRecentProperty);
+    USpawnEntryRowHandle* RowEntry = Entry == nullptr ? nullptr : Cast<USpawnEntryRowHandle>(Entry);
 
-    if (!Entry)
+    if (!RowEntry)
     {
         FBlueprintExceptionInfo ExceptionInfo(
             EBlueprintExceptionType::AccessViolation,
@@ -52,12 +56,13 @@ DEFINE_FUNCTION(USpawnEntryFunctionLibrary::execGetSpawnEntryRow)
     else if (OutRowPtr)
     {
         const UScriptStruct* OutputType = StructProp->Struct;
-        const UScriptStruct* EntryRowType = Entry->GetRowStruct();
+        const UScriptStruct* EntryRowType = RowEntry->GetRowStruct();
 
         if (OutputType == EntryRowType)
         {
             P_NATIVE_BEGIN;
-            bSuccess = Generic_GetSpawnEntryRow(Entry, OutRowPtr);
+            (*static_cast<FName*>(OutRowName)) = RowEntry->GetRowName();
+            bSuccess = Generic_GetSpawnEntryRow(RowEntry, OutRowPtr);
             P_NATIVE_END;
         } else
         {

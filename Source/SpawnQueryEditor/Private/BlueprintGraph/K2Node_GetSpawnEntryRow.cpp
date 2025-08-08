@@ -7,7 +7,6 @@
 #include "K2Node_CallFunction.h"
 #include "K2Node_IfThenElse.h"
 #include "KismetCompiler.h"
-#include "Kismet/DataTableFunctionLibrary.h"
 #include "SpawnQuery/SpawnEntryFunctionLibrary.h"
 #include "SpawnQuery/Pools/SpawnEntryTableRow.h"
 
@@ -15,9 +14,9 @@
 
 namespace GetSpawnEntryRowHelper
 {
-    const FName SpawnEntryPinName = "SpawnEntryRowHandle";
+    const FName SpawnEntryPinName = "SpawnEntryBase";
     const FName RowNotFoundPinName = "RowNotFound";
-    const FName RowNamePinName = "RowName";
+    const FName RowNamePinName = "OutRowName";
 }
 
 void UK2Node_GetSpawnEntryRow::PostLoad()
@@ -82,8 +81,11 @@ void UK2Node_GetSpawnEntryRow::AllocateDefaultPins()
     CreatePin(EGPD_Output, UEdGraphSchema_K2::PC_Exec, GetSpawnEntryRowHelper::RowNotFoundPinName);
 
     // Add SpawnEntry pin
-    SpawnEntryPin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Object, USpawnEntryRowHandle::StaticClass(), GetSpawnEntryRowHelper::SpawnEntryPinName);
+    SpawnEntryPin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Object, USpawnEntryBase::StaticClass(), GetSpawnEntryRowHelper::SpawnEntryPinName);
     SpawnEntryPin->bDefaultValueIsIgnored = true;
+
+    ResultNamePin = CreatePin(EGPD_Output, UEdGraphSchema_K2::PC_Name, GetSpawnEntryRowHelper::RowNamePinName);
+    ResultNamePin->PinFriendlyName = LOCTEXT("GetSpawnEntryRow Output Row", "Out Row Name");
 
     // Result pin
     ResultPin = CreatePin(EGPD_Output, UEdGraphSchema_K2::PC_Wildcard, UEdGraphSchema_K2::PN_ReturnValue);
@@ -105,7 +107,7 @@ void UK2Node_GetSpawnEntryRow::ExpandNode(class FKismetCompilerContext& Compiler
     Super::ExpandNode(CompilerContext, SourceGraph);
 
     UEdGraphPin* OriginalEntryPin = SpawnEntryPin;
-    USpawnEntryRowHandle* Entry = SpawnEntryPin ? Cast<USpawnEntryRowHandle>(OriginalEntryPin->DefaultObject) : nullptr;
+    USpawnEntryBase* Entry = SpawnEntryPin ? Cast<USpawnEntryBase>(OriginalEntryPin->DefaultObject) : nullptr;
 
     if (OriginalEntryPin == nullptr)
     {
@@ -149,6 +151,10 @@ void UK2Node_GetSpawnEntryRow::ExpandNode(class FKismetCompilerContext& Compiler
     FunctionOutRowPin->PinType = OriginalOutRowPin->PinType;
     FunctionOutRowPin->PinType.PinSubCategoryObject = OriginalOutRowPin->PinType.PinSubCategoryObject;
     CompilerContext.MovePinLinksToIntermediate(*OriginalOutRowPin, *FunctionOutRowPin);
+
+    UEdGraphPin* OriginalOutRowNamePin = FindPinChecked(GetSpawnEntryRowHelper::RowNamePinName);
+    UEdGraphPin* FunctionOutRowNamePin = GetSpawnEntryRowFunction->FindPinChecked(TEXT("OutRowName"));
+    CompilerContext.MovePinLinksToIntermediate(*OriginalOutRowNamePin, *FunctionOutRowNamePin);
 
     // Connect the out execution pins
     UEdGraphPin* FunctionReturnPin = GetSpawnEntryRowFunction->FindPinChecked(UEdGraphSchema_K2::PN_ReturnValue);
@@ -212,7 +218,7 @@ void UK2Node_GetSpawnEntryRow::EarlyValidation(class FCompilerResultsLog& Messag
         const USpawnEntryRowHandle* RowHandle = Cast<USpawnEntryRowHandle>(SpawnEntryPin->DefaultObject);
         if (!RowHandle)
         {
-            MessageLog.Error(*LOCTEXT("NoRowHandle", "No RowHandle in @@").ToString(), this);
+            MessageLog.Error(*LOCTEXT("NoRowHandle", "USpawnEntryBase does not have a table row @@").ToString(), this);
             return;
         }
     }
@@ -222,7 +228,7 @@ void UK2Node_GetSpawnEntryRow::PreloadRequiredAssets()
 {
     if (SpawnEntryPin)
     {
-        if (USpawnEntryRowHandle* RowHandle = Cast<USpawnEntryRowHandle>(SpawnEntryPin->DefaultObject))
+        if (USpawnEntryBase* RowHandle = Cast<USpawnEntryBase>(SpawnEntryPin->DefaultObject))
         {
             // make sure to properly load the data-table object so that we can 
             // farm the "RowStruct" property from it (below, in GetDataTableRowStructType)
@@ -238,7 +244,7 @@ void UK2Node_GetSpawnEntryRow::ReallocatePinsDuringReconstruction(TArray<UEdGrap
 
     if (SpawnEntryPin)
     {
-        if (USpawnEntryRowHandle* RowHandle = Cast<USpawnEntryRowHandle>(SpawnEntryPin->DefaultObject))
+        if (USpawnEntryBase* RowHandle = Cast<USpawnEntryBase>(SpawnEntryPin->DefaultObject))
         {
             // make sure to properly load the data-table object so that we can 
             // farm the "RowStruct" property from it (below, in GetDataTableRowStructType)

@@ -45,6 +45,7 @@ private:
     UScriptStruct* GetDataTableRowStructType() const;
 
     UEdGraphPin* SpawnEntryPin;
+    UEdGraphPin* ResultNamePin;
     UEdGraphPin* ResultPin;
 
     FNodeTextCache CachedNodeTitle;
