@@ -12,6 +12,7 @@ class USpawnScatterComponent : public USceneComponent
     GENERATED_BODY()
 
 public:
+    UFUNCTION(BlueprintCallable)
     SPAWNQUERY_API void SpawnActors(USpawnQueryContext* Context);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn Scatter")
